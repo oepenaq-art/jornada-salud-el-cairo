@@ -107,11 +107,13 @@ export function downloadTemplateExcel() {
   const sampleDoctors = [
     {
       Nombre: "Dr. Juan Pablo Montoya",
+      Documento: "76001234",
       Especialidad: "Medicina General",
       RegistroMedico: "RM-76001",
     },
     {
       Nombre: "Dra. Camila Vélez",
+      Documento: "1114555000",
       Especialidad: "Pediatría",
       RegistroMedico: "RM-76002",
     },
@@ -151,6 +153,9 @@ export async function parseExcelFile(
         const nombre = String(
           r["Nombre"] || r["nombre"] || r["Medico"] || r["Médico"] || ""
         ).trim();
+        const documento = String(
+          r["Documento"] || r["documento"] || r["CC"] || r["Cedula"] || r["Cédula"] || ""
+        ).trim();
         const especialidad = String(
           r["Especialidad"] || r["especialidad"] || "Medicina General"
         ).trim();
@@ -161,6 +166,7 @@ export async function parseExcelFile(
           doctors.push({
             id: `med-imp-${Date.now()}-${i}`,
             nombre,
+            documento,
             especialidad,
             registroMedico: registro,
           });

@@ -38,7 +38,7 @@ export interface Patient {
 export interface Doctor {
   id: string;
   nombre: string;
-  documento: string; // Cédula de Ciudadanía (CC)
+  documento?: string; // Cédula de Ciudadanía (CC)
   especialidad: string;
   registroMedico?: string;
   telefono?: string;
