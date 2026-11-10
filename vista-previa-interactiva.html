@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Jornada de Salud El Cairo | Fundación Tejas para mi Pueblo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            teja: {
+              50: "#fdf4f1",
+              100: "#fbe6df",
+              200: "#f7d1c4",
+              500: "#d95f38",
+              600: "#d25427",
+              700: "#a83c1b",
+              800: "#8b331a",
+            },
+            pueblo: {
+              50: "#f3f8f2",
+              100: "#e2efe0",
+              200: "#c6dfc3",
+              600: "#356530",
+              700: "#2c5528",
+              800: "#264423",
+              900: "#20381e",
+            }
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-gray-100 text-gray-900 min-h-screen pb-16 font-sans">
+  <!-- Barra decorativa inspirada en los calados de El Cairo -->
+  <div class="h-2.5 w-full" style="background: linear-gradient(90deg, #d25427 0%, #FACC15 25%, #38BDF8 50%, #356530 75%, #d25427 100%);"></div>
+
+  <!-- Cabecera con Fondo de El Cairo y Logo de Tejas para mi Pueblo -->
+  <header class="relative bg-pueblo-900 text-white overflow-hidden shadow-lg">
+    <div class="absolute inset-0 bg-cover bg-center opacity-35" style="background-image: url('./public/images/el-cairo-chiva.png');"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-pueblo-900/80 via-pueblo-900/75 to-pueblo-900/95"></div>
+
+    <div class="relative z-10 max-w-3xl mx-auto px-4 pt-3.5 pb-4 space-y-3">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center gap-3">
+          <div class="bg-white rounded-2xl p-1.5 shadow-md shrink-0">
+            <img src="./public/images/logo-tejas.png" alt="Tejas para mi Pueblo" class="h-12 sm:h-14 w-auto object-contain" />
+          </div>
+          <div>
+            <span class="inline-flex items-center gap-1 bg-teja-600 text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full">
+              📍 El Cairo, Valle del Cauca
+            </span>
+            <h1 class="text-base sm:text-xl font-extrabold tracking-tight leading-tight mt-1">
+              Jornada Médica • Tejas para mi Pueblo
+            </h1>
+            <p class="text-[11px] text-pueblo-100 font-medium">
+              Atención Móvil por Especialidad y Análisis por Voz con IA
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-end gap-1.5 shrink-0">
+          <button onclick="openCoordinatorModal()" class="bg-white/15 hover:bg-white/25 text-white px-3 py-2 rounded-xl border border-white/20 text-xs font-bold transition">
+            ⚙️ Coordinación / Excel
+          </button>
+          <button onclick="exportToExcel()" class="text-[11px] font-bold text-amber-200 hover:text-white underline">
+            📥 Descargar Excel
+          </button>
+        </div>
+      </div>
+
+      <!-- Selector de Médico Activo -->
+      <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-2.5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 text-xs">
+        <span class="text-pueblo-100 font-semibold shrink-0">🩺 Médico en turno:</span>
+        <select id="doctorSelect" onchange="changeActiveDoctor(this.value)" class="bg-white text-gray-900 font-bold text-xs rounded-xl px-2.5 py-1.5 flex-1 focus:outline-none"></select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cuerpo Principal -->
+  <main class="max-w-3xl mx-auto px-3.5 pt-3 space-y-3.5">
+    <!-- Filtro por Especialidades -->
+    <div>
+      <div class="flex items-center justify-between mb-1.5 px-1">
+        <span class="text-[11px] font-extrabold uppercase tracking-wider text-gray-500">1. Selecciona tu Especialidad</span>
+        <button onclick="openCoordinatorModal()" class="text-[11px] font-bold text-teja-600 hover:underline">+ Cargar Excel / Nuevo paciente</button>
+      </div>
+      <div id="specialtyPills" class="flex items-center gap-2 overflow-x-auto pb-1.5"></div>
+    </div>
+
+    <!-- Buscador y Pestañas -->
+    <div class="bg-white rounded-2xl p-3 shadow-sm border border-gray-200 space-y-2.5">
+      <input
+        id="searchInput"
+        type="text"
+        oninput="renderPatients()"
+        placeholder="🔍 Buscar paciente por nombre, documento o vereda..."
+        class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-pueblo-600"
+      />
+      <div class="grid grid-cols-3 gap-1.5 bg-gray-100 p-1 rounded-xl text-xs font-extrabold">
+        <button id="tab-pendientes" onclick="setTab('pendientes')" class="py-2 rounded-lg transition bg-white text-teja-700 shadow-sm">Pendientes</button>
+        <button id="tab-requieren" onclick="setTab('requieren')" class="py-2 rounded-lg transition text-gray-600">Remitidos / Exám</button>
+        <button id="tab-todos" onclick="setTab('todos')" class="py-2 rounded-lg transition text-gray-600">Todos</button>
+      </div>
+    </div>
+
+    <!-- Lista de Pacientes -->
+    <div id="patientsList" class="space-y-2.5"></div>
+
+    <!-- Pie Cultural El Cairo -->
+    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200 mt-6">
+      <img src="./public/images/fachadas-el-cairo.png" alt="El Cairo Valle" class="w-full h-24 sm:h-32 object-cover" />
+      <div class="p-3 flex items-center gap-2.5 text-xs bg-gradient-to-r from-pueblo-50 via-white to-teja-50">
+        <img src="./public/images/calado-el-cairo.png" alt="Calado" class="w-10 h-10 rounded-lg object-cover border border-gray-200 shrink-0" />
+        <div>
+          <p class="font-extrabold text-pueblo-800">Jornada Humanitaria en El Cairo, Valle del Cauca</p>
+          <p class="text-[11px] text-gray-500">Fundación "Tejas para mi Pueblo" • Paisaje Cultural Cafetero</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL DE ATENCIÓN MÉDICA Y DICTADO POR VOZ -->
+  <div id="attentionModal" class="fixed inset-0 z-40 bg-gray-100 hidden flex-col overflow-hidden">
+    <div class="bg-pueblo-700 text-white px-4 py-3 flex items-center justify-between shadow-md shrink-0">
+      <button onclick="closeAttentionModal()" class="text-sm font-bold bg-white/15 hover:bg-white/25 px-3 py-1.5 rounded-xl">← Volver</button>
+      <div class="text-center">
+        <span id="modalSpecialty" class="text-[11px] uppercase tracking-wider text-pueblo-200 block font-semibold"></span>
+        <span id="modalDoctor" class="text-xs font-bold"></span>
+      </div>
+      <div class="w-14"></div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-3.5 sm:p-5 max-w-2xl w-full mx-auto space-y-4 pb-28">
+      <!-- Info Paciente -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
+        <h2 id="modalPatientName" class="text-lg font-extrabold text-gray-900"></h2>
+        <p id="modalPatientDetails" class="text-xs text-gray-600 font-medium mt-0.5"></p>
+        <div id="modalPatientMotivo" class="mt-2.5 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-xs text-amber-900"></div>
+      </div>
+
+      <!-- Paso 1: Triage -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200 space-y-3">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-gray-700">1. ¿Qué requiere el paciente?</h3>
+        <div class="grid grid-cols-3 gap-2.5">
+          <button type="button" id="btnSeguimiento" onclick="toggleFlag('seguimiento')" class="p-3 rounded-2xl border-2 flex flex-col items-center gap-1 text-center transition">
+            <span class="text-xl">🔄</span>
+            <span class="text-xs font-extrabold">Seguimiento</span>
+            <span id="badgeSeguimiento" class="text-[10px] font-bold px-2 py-0.5 rounded-full">NO</span>
+          </button>
+          <button type="button" id="btnExamenes" onclick="toggleFlag('examenes')" class="p-3 rounded-2xl border-2 flex flex-col items-center gap-1 text-center transition">
+            <span class="text-xl">🧪</span>
+            <span class="text-xs font-extrabold">Exámenes</span>
+            <span id="badgeExamenes" class="text-[10px] font-bold px-2 py-0.5 rounded-full">NO</span>
+          </button>
+          <button type="button" id="btnRemision" onclick="toggleFlag('remision')" class="p-3 rounded-2xl border-2 flex flex-col items-center gap-1 text-center transition">
+            <span class="text-xl">🚑</span>
+            <span class="text-xs font-extrabold">Remisión</span>
+            <span id="badgeRemision" class="text-[10px] font-bold px-2 py-0.5 rounded-full">NO</span>
+          </button>
+        </div>
+        <div>
+          <label class="text-[11px] font-bold text-gray-600 block mb-1">Especialidad destino o exámenes principales:</label>
+          <input id="inputDetalleDestino" type="text" placeholder="Ej. Remisión a Cardiología + Ecocardiograma y Creatinina" class="w-full border border-gray-300 rounded-xl px-3 py-2 text-xs font-medium" />
+        </div>
+      </div>
+
+      <!-- Paso 2: Grabación de Audio -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-gray-700">2. Grabar Análisis Clínico por Voz</h3>
+          <button type="button" onclick="loadSimulatedAIDictation()" class="text-[11px] font-bold text-teja-600 underline">✨ Probar ejemplo con IA</button>
+        </div>
+
+        <div class="bg-pueblo-50 border border-pueblo-200 rounded-xl p-3 text-xs text-pueblo-900">
+          <p class="font-bold mb-1">Guía al hablar (la IA eliminará el ruido y muletillas):</p>
+          <p class="text-[11px]">1. Enfermedad actual • 2. Antecedentes • 3. Examen físico • 4. Motivo de remisión o exámenes.</p>
+        </div>
+
+        <div id="recorderContainer">
+          <button type="button" id="btnRecordStart" onclick="toggleRecording()" class="w-full py-4 bg-gradient-to-r from-teja-600 to-teja-500 text-white rounded-2xl shadow-lg flex items-center justify-center gap-3 font-extrabold text-base">
+            🎙️ <span id="recordBtnLabel">Presionar para Grabar Audio</span>
+          </button>
+        </div>
+
+        <audio id="audioPreview" controls class="w-full h-10 hidden"></audio>
+
+        <button type="button" onclick="processAudioWithAI()" class="w-full py-3.5 bg-pueblo-600 hover:bg-pueblo-700 text-white font-extrabold rounded-xl shadow flex items-center justify-center gap-2 text-sm">
+          ✨ Convertir Audio en Análisis Médico Estructurado
+        </button>
+
+        <div id="aiAlert" class="hidden p-3 rounded-xl text-xs"></div>
+      </div>
+
+      <!-- Paso 3: Nota Estructurada Editable -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-200 space-y-3">
+        <h3 class="text-xs font-extrabold uppercase tracking-wider text-pueblo-800">3. Estructura de Análisis Médico (Editable)</h3>
+        <div>
+          <label class="text-xs font-bold text-gray-700 block mb-1">1. Enfermedad Actual</label>
+          <textarea id="noteEA" rows="3" class="w-full border border-gray-300 rounded-xl p-2.5 text-xs"></textarea>
+        </div>
+        <div>
+          <label class="text-xs font-bold text-gray-700 block mb-1">2. Antecedentes Relevantes</label>
+          <textarea id="noteAnt" rows="2" class="w-full border border-gray-300 rounded-xl p-2.5 text-xs"></textarea>
+        </div>
+        <div>
+          <label class="text-xs font-bold text-gray-700 block mb-1">3. Hallazgos al Examen Físico</label>
+          <textarea id="noteEF" rows="3" class="w-full border border-gray-300 rounded-xl p-2.5 text-xs"></textarea>
+        </div>
+        <div>
+          <label class="text-xs font-bold text-teja-700 block mb-1">4. Impresión Diagnóstica (CIE-10)</label>
+          <input id="noteDx" type="text" class="w-full border border-gray-300 rounded-xl p-2.5 text-xs font-semibold" />
+        </div>
+        <div>
+          <label class="text-xs font-bold text-teja-700 block mb-1">5. Plan y Justificación de Remisión / Exámenes</label>
+          <textarea id="notePlan" rows="4" class="w-full border border-teja-200 bg-teja-50/30 rounded-xl p-2.5 text-xs"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 p-3 shadow-2xl z-50">
+      <div class="max-w-2xl mx-auto flex items-center gap-2.5">
+        <button type="button" onclick="saveCurrentPatient()" class="flex-1 py-3.5 bg-teja-600 hover:bg-teja-700 text-white font-extrabold text-sm rounded-xl shadow-lg">
+          ✅ Guardar Atención
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE COORDINACIÓN -->
+  <div id="coordinatorModal" class="fixed inset-0 z-50 bg-black/70 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h2 class="font-extrabold text-pueblo-800 text-sm">Panel de Coordinación y Excel</h2>
+        <button onclick="closeCoordinatorModal()" class="text-gray-500 font-bold">✕</button>
+      </div>
+      <div class="space-y-3 text-xs">
+        <button onclick="exportToExcel()" class="w-full py-3 bg-teja-600 text-white font-bold rounded-xl shadow">
+          📥 Descargar Consolidado de la Jornada (.xlsx)
+        </button>
+        <div class="border border-gray-200 rounded-xl p-3 space-y-2 bg-gray-50">
+          <p class="font-bold text-gray-800">Cargar archivo Excel de Pacientes (.xlsx / .csv):</p>
+          <input type="file" accept=".xlsx,.xls,.csv" onchange="importExcel(event)" class="w-full text-xs" />
+        </div>
+        <div class="border border-gray-200 rounded-xl p-3 space-y-2">
+          <label class="font-bold text-gray-800 block">API Key de Google Gemini (para pruebas directas):</label>
+          <input id="geminiKeyInput" type="password" placeholder="AIzaSy..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-xs font-mono" />
+          <button onclick="saveLocalKey()" class="w-full py-2 bg-pueblo-600 text-white font-bold rounded-lg">Guardar API Key</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ESPECIALIDADES = [
+      "Pediatría",
+      "Medicina General",
+      "Dermatología",
+      "Urología",
+      "Optometría",
+      "Odontología",
+      "Fisioterapia",
+      "Enfermería"
+    ];
+
+    // PROFESIONALES OFICIALES EXTRAÍDOS DE "Lista MD con CC"
+    const doctors = [
+      // Pediatría
+      { id: "p1", nombre: "Dra. Catalina Romero Serna", cc: "31429578", especialidad: "Pediatría" },
+      { id: "p2", nombre: "Dra. Edna Karina Garcia Ramirez", cc: "1130611541", especialidad: "Pediatría" },
+      { id: "p3", nombre: "Dr. Gabriel Lopez", cc: "74184732", especialidad: "Pediatría" },
+      { id: "p4", nombre: "Dr. Gustavo Duque", cc: "1112782156", especialidad: "Pediatría" },
+      { id: "p5", nombre: "Dr. Oscar Enrique Peña Quemba", cc: "80926082", especialidad: "Pediatría" },
+      { id: "p6", nombre: "Dra. Beatriz Ospina", cc: "43586701", especialidad: "Pediatría" },
+      { id: "p7", nombre: "Dra. Martha Cuellar", cc: "43978320", especialidad: "Pediatría" },
+      { id: "p8", nombre: "Dra. Juliana Trujillo Gómez", cc: "32295717", especialidad: "Pediatría" },
+      { id: "p9", nombre: "Dr. Daniel Madrid Gómez", cc: "1017241043", especialidad: "Pediatría" },
+      { id: "p10", nombre: "Dra. Laura Barrientos", cc: "1039464063", especialidad: "Pediatría" },
+      { id: "p11", nombre: "Dr. David Andrés Espinal Botero", cc: "70554260", especialidad: "Pediatría" },
+      { id: "p12", nombre: "Dra. Maria Gabriela Novoa Villada", cc: "1152210382", especialidad: "Pediatría" },
+      { id: "p13", nombre: "Dra. Manuela Rendón Díez", cc: "1037637056", especialidad: "Pediatría" },
+
+      // Medicina General e Internos
+      { id: "m1", nombre: "Dra. Isabella Alzate Arias", cc: "1144106068", especialidad: "Medicina General" },
+      { id: "m2", nombre: "Dra. Sara Hernandez", cc: "1113670304", especialidad: "Medicina General" },
+      { id: "m3", nombre: "Dra. Juanita Greiffenstein", cc: "1000413109", especialidad: "Medicina General" },
+      { id: "m4", nombre: "Dr. Nicolas Ugarte Diaz", cc: "1125288462", especialidad: "Medicina General" },
+      { id: "m5", nombre: "Dra. Laura Michelle Durán Burgos", cc: "1007917724", especialidad: "Medicina General" },
+
+      // Dermatología
+      { id: "d1", nombre: "Dra. Silvana Castillo", cc: "1112878579", especialidad: "Dermatología" },
+      { id: "d2", nombre: "Dr. David Chalarca", cc: "1036679311", especialidad: "Dermatología" },
+
+      // Urología
+      { id: "u1", nombre: "Dra. Julianna Santoyo Vargas", cc: "29111847", especialidad: "Urología" },
+
+      // Optometría
+      { id: "o1", nombre: "Dra. Andrea Stephany Rojas Castro", cc: "1088329721", especialidad: "Optometría" },
+
+      // Odontología
+      { id: "od1", nombre: "Dra. Lizeth Daniela Quintero", cc: "1112905289", especialidad: "Odontología" },
+      { id: "od2", nombre: "Dra. Laura Milena Duque Restrepo", cc: "1053812026", especialidad: "Odontología" },
+
+      // Fisioterapia
+      { id: "f1", nombre: "Dra. Maria Alejandra Arroyave Mondragón", cc: "1112904259", especialidad: "Fisioterapia" },
+      { id: "f2", nombre: "Dr. Fernando Jordan Castro", cc: "76143050", especialidad: "Fisioterapia" },
+
+      // Enfermería
+      { id: "e1", nombre: "Enf. Eliana Garcia Valencia", cc: "1112905072", especialidad: "Enfermería" },
+      { id: "e2", nombre: "Enf. Gina Paola Barco Ocampo", cc: "1112904568", especialidad: "Enfermería" },
+      { id: "e3", nombre: "Enf. Giovana Gallego Narváez", cc: "42143097", especialidad: "Enfermería" },
+      { id: "e4", nombre: "Enf. Kevin Parra Salinas", cc: "1112906295", especialidad: "Enfermería" }
+    ];
+
+    let patients = [
+      {
+        id: "p1", tipoDocumento: "CC", documento: "6.284.192", nombre: "José Albeiro Montoya Giraldo",
+        edad: 68, sexo: "M", veredaBarrio: "Vereda La Guardia", especialidad: "Urología",
+        motivoInicial: "Sintomatología urinaria obstructiva baja y nicturia", estado: "pendiente",
+        requiereSeguimiento: false, requiereExamenes: false, requiereRemision: false
+      },
+      {
+        id: "p2", tipoDocumento: "CC", documento: "29.415.883", nombre: "María Ruby Castaño de Ospina",
+        edad: 62, sexo: "F", veredaBarrio: "Barrio El Prado (Cabecera)", especialidad: "Medicina General",
+        motivoInicial: "Dolor epigástrico recurrente y mareo ocasional", estado: "pendiente",
+        requiereSeguimiento: false, requiereExamenes: false, requiereRemision: false
+      },
+      {
+        id: "p3", tipoDocumento: "TI", documento: "1.114.892.301", nombre: "Samuel David Bedoya Salazar",
+        edad: 7, sexo: "M", veredaBarrio: "Corregimiento Albán", especialidad: "Pediatría",
+        motivoInicial: "Tos nocturna persistente y episodios de sibilancias", estado: "pendiente",
+        requiereSeguimiento: false, requiereExamenes: false, requiereRemision: false
+      },
+      {
+        id: "p4", tipoDocumento: "CC", documento: "31.890.412", nombre: "Luz Dary Echeverri Cardona",
+        edad: 44, sexo: "F", veredaBarrio: "Vereda Boquerón", especialidad: "Dermatología",
+        motivoInicial: "Lesión hiperpigmentada asimétrica en región malar derecha", estado: "pendiente",
+        requiereSeguimiento: false, requiereExamenes: false, requiereRemision: false
+      },
+      {
+        id: "p5", tipoDocumento: "CC", documento: "16.402.711", nombre: "Hernando de Jesús Patiño",
+        edad: 74, sexo: "M", veredaBarrio: "Vereda Alto Bonito", especialidad: "Optometría",
+        motivoInicial: "Disminución progresiva de agudeza visual bilateral", estado: "pendiente",
+        requiereSeguimiento: false, requiereExamenes: false, requiereRemision: false
+      },
+      {
+        id: "p6", tipoDocumento: "RC", documento: "1.114.905.118", nombre: "Luciana Arango Quintero",
+        edad: 4, sexo: "F", veredaBarrio: "Resguardo Indígena La Guajira", especialidad: "Pediatría",
+        motivoInicial: "Bajo peso para la edad y dermatitis en pliegues", estado: "pendiente",
+        requiereSeguimiento: false, requiereExamenes: false, requiereRemision: false
+      },
+      {
+        id: "p7", tipoDocumento: "CC", documento: "1.112.458.920", nombre: "Luis Fernando Agudelo Marín",
+        edad: 53, sexo: "M", veredaBarrio: "Vereda Salmelia", especialidad: "Fisioterapia",
+        motivoInicial: "Dolor lumbar crónico y limitación funcional para labores agrícolas", estado: "pendiente",
+        requiereSeguimiento: false, requiereExamenes: false, requiereRemision: false
+      },
+      {
+        id: "p8", tipoDocumento: "CC", documento: "29.418.004", nombre: "Rosa Emilia Zuluaga",
+        edad: 59, sexo: "F", veredaBarrio: "Vereda Bellavista", especialidad: "Odontología",
+        motivoInicial: "Dolor dental agudo en cuadrante superior y necesidad de valoración", estado: "pendiente",
+        requiereSeguimiento: false, requiereExamenes: false, requiereRemision: false
+      }
+    ];
+
+    let selectedSpecialty = "Todas";
+    let currentTab = "pendientes";
+    let activeDoctor = doctors[0];
+    let currentPatient = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let recordedBlob = null;
+    let isRecording = false;
+
+    function initApp() {
+      const sel = document.getElementById("doctorSelect");
+      sel.innerHTML = doctors.map(d => `<option value="${d.id}">${d.nombre} (CC: ${d.cc} - ${d.especialidad})</option>`).join("");
+      activeDoctor = doctors[0];
+      document.getElementById("geminiKeyInput").value = localStorage.getItem("tejas_gemini_api_key") || "";
+      renderSpecialtyPills();
+      renderPatients();
+    }
+
+    function changeActiveDoctor(docId) {
+      activeDoctor = doctors.find(d => d.id === docId) || doctors[0];
+    }
+
+    function renderSpecialtyPills() {
+      const container = document.getElementById("specialtyPills");
+      const all = ["Todas", ...ESPECIALIDADES];
+      container.innerHTML = all.map(esp => {
+        const count = esp === "Todas" ? patients.length : patients.filter(p => p.especialidad === esp).length;
+        const active = selectedSpecialty === esp;
+        return `<button onclick="selectSpec('${esp}')" class="px-3.5 py-2 rounded-2xl text-xs font-extrabold whitespace-nowrap shadow-sm transition ${
+          active ? "bg-pueblo-700 text-white" : "bg-white text-gray-700 border border-gray-200"
+        }">${esp} (${count})</button>`;
+      }).join("");
+    }
+
+    function selectSpec(esp) {
+      selectedSpecialty = esp;
+      // Auto-seleccionar el primer médico de esa especialidad si existe
+      if (esp !== "Todas") {
+        const matchingDoc = doctors.find(d => d.especialidad.toLowerCase() === esp.toLowerCase());
+        if (matchingDoc) {
+          activeDoctor = matchingDoc;
+          document.getElementById("doctorSelect").value = matchingDoc.id;
+        }
+      }
+      renderSpecialtyPills();
+      renderPatients();
+    }
+
+    function setTab(tab) {
+      currentTab = tab;
+      ["pendientes", "requieren", "todos"].forEach(t => {
+        const el = document.getElementById("tab-" + t);
+        el.className = t === tab
+          ? "py-2 rounded-lg transition bg-white text-teja-700 shadow-sm"
+          : "py-2 rounded-lg transition text-gray-600";
+      });
+      renderPatients();
+    }
+
+    function renderPatients() {
+      const q = (document.getElementById("searchInput").value || "").toLowerCase();
+      const filtered = patients.filter(p => {
+        if (selectedSpecialty !== "Todas" && p.especialidad !== selectedSpecialty) return false;
+        if (currentTab === "pendientes" && p.estado === "atendido") return false;
+        if (currentTab === "requieren" && !p.requiereSeguimiento && !p.requiereExamenes && !p.requiereRemision) return false;
+        if (q && !p.nombre.toLowerCase().includes(q) && !p.documento.toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      const list = document.getElementById("patientsList");
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="bg-white rounded-2xl p-8 text-center border border-gray-200 text-xs text-gray-500">No hay pacientes en este filtro.</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(p => `
+        <div onclick="openPatient('${p.id}')" class="bg-white rounded-2xl p-4 shadow-sm border-2 ${p.estado === 'atendido' ? 'border-pueblo-200' : 'border-transparent'} hover:border-teja-500 cursor-pointer transition">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <span class="bg-pueblo-50 text-pueblo-800 border border-pueblo-200 text-[10px] font-extrabold px-2 py-0.5 rounded-md">${p.especialidad}</span>
+              <span class="text-[11px] text-gray-500 font-semibold ml-1">${p.tipoDocumento} ${p.documento} • ${p.veredaBarrio || 'El Cairo'}</span>
+              <h3 class="text-base font-extrabold text-gray-900 mt-1">${p.nombre}</h3>
+              <p class="text-xs text-gray-600"><strong>${p.edad} años</strong> (${p.sexo}) • ${p.motivoInicial || ''}</p>
+            </div>
+            <div>
+              ${p.estado === 'atendido'
+                ? `<span class="bg-green-100 text-green-800 text-[11px] font-extrabold px-2.5 py-1 rounded-full">✅ Atendido</span>`
+                : `<span class="bg-teja-600 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-sm inline-block">🎙️ Atender</span>`
+              }
+            </div>
+          </div>
+          ${(p.requiereSeguimiento || p.requiereExamenes || p.requiereRemision) ? `
+            <div class="mt-2.5 pt-2 border-t border-gray-100 flex gap-1.5 flex-wrap text-[10px] font-bold">
+              ${p.requiereSeguimiento ? `<span class="bg-amber-100 text-amber-900 px-2 py-0.5 rounded">🔄 Seguimiento</span>` : ''}
+              ${p.requiereExamenes ? `<span class="bg-blue-100 text-blue-900 px-2 py-0.5 rounded">🧪 Exámenes</span>` : ''}
+              ${p.requiereRemision ? `<span class="bg-red-100 text-red-900 px-2 py-0.5 rounded">🚑 Remisión</span>` : ''}
+            </div>
+          ` : ''}
+        </div>
+      `).join("");
+    }
+
+    function openPatient(id) {
+      currentPatient = JSON.parse(JSON.stringify(patients.find(p => p.id === id)));
+      document.getElementById("modalSpecialty").textContent = currentPatient.especialidad;
+      document.getElementById("modalDoctor").textContent = `${activeDoctor.nombre} (CC ${activeDoctor.cc})`;
+      document.getElementById("modalPatientName").textContent = currentPatient.nombre;
+      document.getElementById("modalPatientDetails").textContent = `${currentPatient.tipoDocumento} ${currentPatient.documento} • ${currentPatient.edad} años (${currentPatient.sexo}) • ${currentPatient.veredaBarrio || 'El Cairo'}`;
+      document.getElementById("modalPatientMotivo").textContent = `Motivo inicial: ${currentPatient.motivoInicial || 'Valoración'}`;
+      document.getElementById("inputDetalleDestino").value = currentPatient.detalleDestino || "";
+
+      const n = currentPatient.analisisEstructurado || {};
+      document.getElementById("noteEA").value = n.enfermedadActual || "";
+      document.getElementById("noteAnt").value = n.antecedentes || "";
+      document.getElementById("noteEF").value = n.examenFisico || "";
+      document.getElementById("noteDx").value = n.impresionDiagnostica || "";
+      document.getElementById("notePlan").value = n.planYJustificacion || "";
+      document.getElementById("aiAlert").className = "hidden";
+
+      updateTriageButtons();
+      document.getElementById("attentionModal").classList.remove("hidden");
+      document.getElementById("attentionModal").classList.add("flex");
+    }
+
+    function closeAttentionModal() {
+      document.getElementById("attentionModal").classList.add("hidden");
+      document.getElementById("attentionModal").classList.remove("flex");
+    }
+
+    function toggleFlag(type) {
+      if (type === 'seguimiento') currentPatient.requiereSeguimiento = !currentPatient.requiereSeguimiento;
+      if (type === 'examenes') currentPatient.requiereExamenes = !currentPatient.requiereExamenes;
+      if (type === 'remision') currentPatient.requiereRemision = !currentPatient.requiereRemision;
+      updateTriageButtons();
+    }
+
+    function updateTriageButtons() {
+      const setBtn = (btnId, badgeId, active, color) => {
+        const b = document.getElementById(btnId);
+        const bg = document.getElementById(badgeId);
+        b.className = active
+          ? `p-3 rounded-2xl border-2 flex flex-col items-center gap-1 text-center transition bg-${color}-50 border-${color}-500 text-${color}-900`
+          : `p-3 rounded-2xl border-2 flex flex-col items-center gap-1 text-center transition bg-gray-50 border-gray-200 text-gray-500`;
+        bg.textContent = active ? "SÍ" : "NO";
+        bg.className = active
+          ? `text-[10px] font-bold px-2 py-0.5 rounded-full bg-${color}-600 text-white`
+          : `text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-200 text-gray-600`;
+      };
+      setBtn("btnSeguimiento", "badgeSeguimiento", currentPatient.requiereSeguimiento, "amber");
+      setBtn("btnExamenes", "badgeExamenes", currentPatient.requiereExamenes, "blue");
+      setBtn("btnRemision", "badgeRemision", currentPatient.requiereRemision, "red");
+    }
+
+    async function toggleRecording() {
+      const btn = document.getElementById("btnRecordStart");
+      const label = document.getElementById("recordBtnLabel");
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+          mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+          mediaRecorder.onstop = () => {
+            recordedBlob = new Blob(audioChunks, { type: mediaRecorder.mimeType || "audio/webm" });
+            const audioEl = document.getElementById("audioPreview");
+            audioEl.src = URL.createObjectURL(recordedBlob);
+            audioEl.classList.remove("hidden");
+            stream.getTracks().forEach(t => t.stop());
+          };
+          mediaRecorder.start();
+          isRecording = true;
+          btn.className = "w-full py-4 bg-red-600 text-white rounded-2xl shadow-lg flex items-center justify-center gap-3 font-extrabold text-base animate-pulse";
+          label.textContent = "Grabando... Toca para Detener";
+        } catch (err) {
+          alert("No se detectó micrófono o permiso. Puedes probar el botón '✨ Probar ejemplo con IA'.");
+        }
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        btn.className = "w-full py-4 bg-gradient-to-r from-teja-600 to-teja-500 text-white rounded-2xl shadow-lg flex items-center justify-center gap-3 font-extrabold text-base";
+        label.textContent = "Grabar Nuevo Audio";
+      }
+    }
+
+    function loadSimulatedAIDictation() {
+      currentPatient.requiereSeguimiento = true;
+      currentPatient.requiereExamenes = true;
+      currentPatient.requiereRemision = true;
+      updateTriageButtons();
+      document.getElementById("inputDetalleDestino").value = "Ecocardiograma TT, Creatinina, Electrolitos + Remisión a Cardiología";
+
+      document.getElementById("noteEA").value = `Paciente de ${currentPatient.edad} años valorado en jornada en El Cairo por cuadro de 2 meses de disnea de medianos esfuerzos (NYHA II-III), ortopnea y edema vespertino progresivo de miembros inferiores.`;
+      document.getElementById("noteAnt").value = "Patológicos: Hipertensión arterial crónica hace 12 años. Farmacológicos: Losartán 50 mg cada 12h e Hidroclorotiazida 25 mg día (adherencia irregular). Niega alergias.";
+      document.getElementById("noteEF").value = "TA: 158/94 mmHg, FC: 92 lpm, SpO2: 91%. Ingurgitación yugular grado II, soplo sistólico mitral II/VI, estertores crepitantes bibasales y edema bimaleolar grado II con fóvea.";
+      document.getElementById("noteDx").value = "I50.9 - Insuficiencia cardíaca congestiva descompensada / I10X - Hipertensión esencial no controlada";
+      document.getElementById("notePlan").value = "Por signos clínicos de sobrecarga hídrica y soplo mitral, se solicita Ecocardiograma Transtorácico, Radiografía de Tórax, Creatinina e Ionograma. Se remite prioritariamente a Cardiología y Medicina Interna para titulación de manejo.";
+
+      const alertEl = document.getElementById("aiAlert");
+      alertEl.className = "bg-green-50 border border-green-300 text-green-900 p-3 rounded-xl text-xs block";
+      alertEl.textContent = "✅ Ejemplo de estructuración con IA cargado: Se filtró el ruido y se organizó la nota en los 5 bloques clínicos.";
+    }
+
+    async function processAudioWithAI() {
+      const key = localStorage.getItem("tejas_gemini_api_key") || "";
+      if (!key || !recordedBlob) {
+        loadSimulatedAIDictation();
+        return;
+      }
+      const alertEl = document.getElementById("aiAlert");
+      alertEl.className = "bg-blue-50 border border-blue-300 text-blue-900 p-3 rounded-xl text-xs block";
+      alertEl.textContent = "⏳ Enviando audio a Gemini Flash para transcripción limpia y estructuración...";
+    }
+
+    function saveCurrentPatient() {
+      currentPatient.estado = "atendido";
+      currentPatient.detalleDestino = document.getElementById("inputDetalleDestino").value;
+      currentPatient.medicoAtendio = activeDoctor.nombre;
+      currentPatient.medicoDocumento = activeDoctor.cc;
+      currentPatient.fechaAtencion = new Date().toLocaleString("es-CO");
+      currentPatient.analisisEstructurado = {
+        enfermedadActual: document.getElementById("noteEA").value,
+        antecedentes: document.getElementById("noteAnt").value,
+        examenFisico: document.getElementById("noteEF").value,
+        impresionDiagnostica: document.getElementById("noteDx").value,
+        planYJustificacion: document.getElementById("notePlan").value,
+        resumenEjecutivo: (document.getElementById("noteDx").value + " - " + currentPatient.detalleDestino).slice(0, 160)
+      };
+
+      patients = patients.map(p => p.id === currentPatient.id ? currentPatient : p);
+      closeAttentionModal();
+      renderPatients();
+    }
+
+    function openCoordinatorModal() {
+      document.getElementById("coordinatorModal").classList.remove("hidden");
+      document.getElementById("coordinatorModal").classList.add("flex");
+    }
+    function closeCoordinatorModal() {
+      document.getElementById("coordinatorModal").classList.add("hidden");
+      document.getElementById("coordinatorModal").classList.remove("flex");
+    }
+    function saveLocalKey() {
+      localStorage.setItem("tejas_gemini_api_key", document.getElementById("geminiKeyInput").value.trim());
+      alert("API Key guardada.");
+    }
+
+    function exportToExcel() {
+      const rows = patients.map((p, idx) => ({
+        "No.": idx + 1,
+        "Estado": p.estado.toUpperCase(),
+        "Especialidad": p.especialidad,
+        "Documento": `${p.tipoDocumento} ${p.documento}`,
+        "Nombre": p.nombre,
+        "Edad": p.edad,
+        "Sexo": p.sexo,
+        "Vereda/Barrio": p.veredaBarrio || "",
+        "Requiere Seguimiento": p.requiereSeguimiento ? "SÍ" : "NO",
+        "Requiere Exámenes": p.requiereExamenes ? "SÍ" : "NO",
+        "Requiere Remisión": p.requiereRemision ? "SÍ" : "NO",
+        "Destino / Exámenes": p.detalleDestino || "",
+        "Médico": p.medicoAtendio || "",
+        "CC Médico": p.medicoDocumento || "",
+        "1. Enfermedad Actual": p.analisisEstructurado?.enfermedadActual || "",
+        "2. Antecedentes": p.analisisEstructurado?.antecedentes || "",
+        "3. Examen Físico": p.analisisEstructurado?.examenFisico || "",
+        "4. Impresión Diagnóstica": p.analisisEstructurado?.impresionDiagnostica || "",
+        "5. Plan y Justificación": p.analisisEstructurado?.planYJustificacion || ""
+      }));
+      const ws = XLSX.utils.json_to_sheet(rows);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Jornada El Cairo");
+      XLSX.writeFile(wb, "Consolidado_Jornada_El_Cairo_TejasParaMiPueblo.xlsx");
+    }
+
+    initApp();
+  </script>
+</body>
+</html>
