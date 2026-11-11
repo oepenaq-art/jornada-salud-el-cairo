@@ -8,6 +8,7 @@ import {
 } from "../types/medical";
 import { blobToBase64 } from "../lib/storage";
 import { cleanMojibake, getCanonicalSpecialty } from "../lib/normalize";
+import EditPatientModal from "./EditPatientModal";
 import {
   ArrowLeft,
   Mic,
@@ -24,6 +25,7 @@ import {
   CalendarClock,
   Volume2,
   Keyboard,
+  Pencil,
 } from "lucide-react";
 
 interface Props {
@@ -59,6 +61,9 @@ export default function PatientAttentionModal({
   onOpenPrintModal,
   onClose,
 }: Props) {
+  const [currentPatientData, setCurrentPatientData] = useState<Patient>(patient);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+
   const [requiereSeguimiento, setRequiereSeguimiento] = useState(
     patient.requiereSeguimiento
   );
@@ -415,7 +420,7 @@ export default function PatientAttentionModal({
       note.planYJustificacion.trim();
 
     const updated: Patient = {
-      ...patient,
+      ...currentPatientData,
       estado: "atendido",
       requiereSeguimiento,
       requiereExamenes,
@@ -510,26 +515,36 @@ export default function PatientAttentionModal({
             <div>
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 <span className="bg-pueblo-100 text-pueblo-900 border border-pueblo-200 text-[11px] font-extrabold px-2.5 py-0.5 rounded-lg">
-                  {getCanonicalSpecialty(patient.especialidad)}
+                  {getCanonicalSpecialty(currentPatientData.especialidad)}
                 </span>
                 <span className="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md">
-                  {patient.tipoDocumento || "CC"} {patient.documento || "Sin número"}
+                  {currentPatientData.tipoDocumento || "CC"} {currentPatientData.documento || "Sin número"}
                 </span>
               </div>
               <h2 className="text-lg font-extrabold text-gray-900 leading-snug">
-                {cleanMojibake(patient.nombre)}
+                {cleanMojibake(currentPatientData.nombre)}
               </h2>
               <p className="text-xs text-gray-600 font-medium mt-1 flex items-center gap-2 flex-wrap">
-                <strong className="text-gray-800">{patient.edad} años</strong>
+                <strong className="text-gray-800">{currentPatientData.edad} años</strong>
                 <span className="text-gray-300">•</span>
-                <span>📞 {patient.telefono && patient.telefono !== "0" && patient.telefono.trim() !== "" ? patient.telefono : "Sin teléfono"}</span>
+                <span>📞 {currentPatientData.telefono && currentPatientData.telefono !== "0" && currentPatientData.telefono.trim() !== "" ? currentPatientData.telefono : "Sin teléfono"}</span>
               </p>
             </div>
+
+            <button
+              type="button"
+              onClick={() => setShowEditModal(true)}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-extrabold text-xs px-2.5 py-1.5 rounded-xl border border-gray-300 transition flex items-center gap-1 shrink-0 active:scale-95 shadow-sm"
+              title="Corregir nombre, documento o teléfono"
+            >
+              <Pencil className="w-3.5 h-3.5 text-pueblo-700" />
+              <span>Editar Datos</span>
+            </button>
           </div>
-          {patient.motivoInicial && (
+          {currentPatientData.motivoInicial && (
             <div className="mt-2.5 bg-amber-50/80 border border-amber-200/80 rounded-xl px-3 py-2 text-xs text-amber-900">
               <strong className="font-bold">Motivo registrado: </strong>
-              {cleanMojibake(patient.motivoInicial)}
+              {cleanMojibake(currentPatientData.motivoInicial)}
             </div>
           )}
         </div>
@@ -925,6 +940,18 @@ export default function PatientAttentionModal({
           </button>
         </div>
       </div>
+
+      {showEditModal && (
+        <EditPatientModal
+          patient={currentPatientData}
+          onSave={async (updated) => {
+            setCurrentPatientData(updated);
+            await onSavePatient(updated);
+            setShowEditModal(false);
+          }}
+          onClose={() => setShowEditModal(false)}
+        />
+      )}
     </div>
   );
 }

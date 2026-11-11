@@ -31,6 +31,7 @@ import { cleanMojibake, getCanonicalSpecialty, normalizeText } from "../lib/norm
 import PatientAttentionModal from "../components/PatientAttentionModal";
 import PrintableReferralModal from "../components/PrintableReferralModal";
 import CoordinatorModal from "../components/CoordinatorModal";
+import EditPatientModal from "../components/EditPatientModal";
 import {
   Search,
   Mic,
@@ -51,6 +52,7 @@ import {
   ChevronRight,
   ListFilter,
   Users,
+  Pencil,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -67,6 +69,7 @@ export default function HomePage() {
 
   // Modals
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
   const [printPatient, setPrintPatient] = useState<Patient | null>(null);
   const [showCoordinator, setShowCoordinator] = useState<boolean>(false);
 
@@ -744,8 +747,8 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    {/* Estado del paciente */}
-                    <div className="shrink-0">
+                    {/* Estado del paciente y botón de edición */}
+                    <div className="shrink-0 flex flex-col items-end gap-1.5">
                       {isAttended ? (
                         <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 text-[11px] font-extrabold px-2.5 py-1 rounded-full">
                           <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
@@ -762,6 +765,19 @@ export default function HomePage() {
                           Atender
                         </span>
                       )}
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingPatient(patient);
+                        }}
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-gray-500 hover:text-pueblo-900 bg-gray-50 hover:bg-gray-100 px-2 py-0.5 rounded-lg border border-gray-200 transition active:scale-95"
+                        title="Editar nombre, cédula o teléfono"
+                      >
+                        <Pencil className="w-3 h-3 text-pueblo-700" />
+                        <span>Editar</span>
+                      </button>
                     </div>
                   </div>
 
@@ -884,6 +900,15 @@ export default function HomePage() {
           onImportData={handleImportData}
           onAddSinglePatient={handleAddSinglePatient}
           onClose={() => setShowCoordinator(false)}
+        />
+      )}
+
+      {/* Modal de Edición de Pacientes */}
+      {editingPatient && (
+        <EditPatientModal
+          patient={editingPatient}
+          onSave={handleSavePatient}
+          onClose={() => setEditingPatient(null)}
         />
       )}
     </div>
