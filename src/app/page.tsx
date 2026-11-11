@@ -64,7 +64,7 @@ export default function HomePage() {
   );
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusTab, setStatusTab] = useState<
-    "pendientes" | "requieren" | "todos"
+    "pendientes" | "atendidos" | "requieren" | "todos"
   >("pendientes");
 
   // Modals
@@ -170,7 +170,7 @@ export default function HomePage() {
           );
     return {
       total: base.length,
-      pendientes: base.filter((p) => p.estado !== "atendido").length,
+      pendientes: base.filter((p) => p.estado !== "atendido" || p.id === "pac-prueba").length,
       requieren: base.filter(
         (p) =>
           p.requiereSeguimiento || p.requiereExamenes || p.requiereRemision
@@ -194,7 +194,18 @@ export default function HomePage() {
     };
 
     const matchesStatus = (p: Patient) => {
+      if (p.id === "pac-prueba") {
+        if (statusTab === "pendientes" || statusTab === "todos") return true;
+        if (statusTab === "atendidos" && p.estado === "atendido") return true;
+        if (
+          statusTab === "requieren" &&
+          (p.requiereSeguimiento || p.requiereExamenes || p.requiereRemision)
+        )
+          return true;
+        return true;
+      }
       if (statusTab === "pendientes" && p.estado === "atendido") return false;
+      if (statusTab === "atendidos" && p.estado !== "atendido") return false;
       if (
         statusTab === "requieren" &&
         !p.requiereSeguimiento &&
@@ -206,8 +217,11 @@ export default function HomePage() {
       return true;
     };
 
-    // 1. Filtrar dentro de la especialidad seleccionada
+    // 1. Filtrar dentro de la especialidad seleccionada (pac-prueba siempre disponible para práctica)
     let list = patients.filter((p) => {
+      if (p.id === "pac-prueba") {
+        return matchesStatus(p) && matchesQuery(p);
+      }
       if (selectedSpecialty !== "Todas") {
         if (!normalizeText(p.especialidad).includes(normSelected)) {
           return false;
@@ -231,6 +245,13 @@ export default function HomePage() {
         globalCount = globalMatches.length;
       }
     }
+
+    // Ubicar al paciente de prueba al principio para fácil acceso de práctica
+    list.sort((a, b) => {
+      if (a.id === "pac-prueba") return -1;
+      if (b.id === "pac-prueba") return 1;
+      return 0;
+    });
 
     return {
       filteredPatients: list,
@@ -640,7 +661,7 @@ export default function HomePage() {
             </div>
           )}
 
-          <div className="grid grid-cols-3 gap-1.5 bg-gray-100 p-1 rounded-xl text-xs font-extrabold">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-gray-100 p-1 rounded-xl text-xs font-extrabold">
             <button
               onClick={() => setStatusTab("pendientes")}
               className={`py-2 rounded-lg transition flex items-center justify-center gap-1 ${
@@ -650,7 +671,20 @@ export default function HomePage() {
               }`}
             >
               <Clock className="w-3.5 h-3.5" />
-              Pendientes ({specialtyCounts.pendientes})
+              <span>Pendientes ({specialtyCounts.pendientes})</span>
+            </button>
+
+            <button
+              onClick={() => setStatusTab("atendidos")}
+              className={`py-2 rounded-lg transition flex items-center justify-center gap-1 ${
+                statusTab === "atendidos"
+                  ? "bg-white text-green-700 shadow-sm"
+                  : "text-gray-600"
+              }`}
+              title="Historial de consultas y documentos clínicos generados"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
+              <span>Atendidos ({specialtyCounts.atendidos})</span>
             </button>
 
             <button
@@ -662,7 +696,7 @@ export default function HomePage() {
               }`}
             >
               <Ambulance className="w-3.5 h-3.5" />
-              Remitidos ({specialtyCounts.requieren})
+              <span>Remitidos ({specialtyCounts.requieren})</span>
             </button>
 
             <button
@@ -674,7 +708,7 @@ export default function HomePage() {
               }`}
             >
               <UserCheck className="w-3.5 h-3.5" />
-              Todos ({specialtyCounts.total})
+              <span>Todos ({specialtyCounts.total})</span>
             </button>
           </div>
         </div>
@@ -702,6 +736,7 @@ export default function HomePage() {
             </div>
           ) : (
             filteredPatients.map((patient) => {
+              const isTestPatient = patient.id === "pac-prueba";
               const isAttended = patient.estado === "atendido";
               const isPendingIA = patient.estado === "pendiente_ia";
 
@@ -710,13 +745,26 @@ export default function HomePage() {
                   key={patient.id}
                   onClick={() => setSelectedPatient(patient)}
                   className={`bg-white rounded-2xl p-4 shadow-sm border-2 transition cursor-pointer active:scale-[0.99] ${
-                    isAttended
+                    isTestPatient
+                      ? "border-emerald-500 bg-emerald-50/25 hover:border-emerald-600 shadow-md ring-2 ring-emerald-400/20"
+                      : isAttended
                       ? "border-pueblo-200 hover:border-pueblo-400"
                       : isPendingIA
                       ? "border-amber-400 bg-amber-50/20"
                       : "border-transparent hover:border-teja-300"
                   }`}
                 >
+                  {isTestPatient && (
+                    <div className="mb-2.5 pb-2 border-b border-emerald-200 flex items-center justify-between gap-1 flex-wrap">
+                      <span className="inline-flex items-center gap-1.5 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-sm">
+                        🧪 Paciente de Prueba • Atenciones Infinitas
+                      </span>
+                      <span className="text-[11px] font-bold text-emerald-800">
+                        Práctica libre de audios y estructuración IA
+                      </span>
+                    </div>
+                  )}
+
                   <div className="flex items-start justify-between gap-2">
                     {/* Columnas requeridas: Nombre, Tipo de documento, Número de documento, Edad en años, Teléfono y Especialidad */}
                     <div className="space-y-1">
@@ -749,7 +797,12 @@ export default function HomePage() {
 
                     {/* Estado del paciente y botón de edición */}
                     <div className="shrink-0 flex flex-col items-end gap-1.5">
-                      {isAttended ? (
+                      {isTestPatient ? (
+                        <span className="inline-flex items-center gap-1 bg-emerald-600 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-sm hover:bg-emerald-700 transition">
+                          <Mic className="w-3.5 h-3.5" />
+                          Practicar Audio
+                        </span>
+                      ) : isAttended ? (
                         <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 text-[11px] font-extrabold px-2.5 py-1 rounded-full">
                           <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
                           Atendido
@@ -781,10 +834,12 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  {/* Etiquetas de Seguimiento, Exámenes o Remisión si ya fueron marcadas */}
+                  {/* Etiquetas de Seguimiento, Exámenes o Remisión y Acceso al Documento */}
                   {(patient.requiereSeguimiento ||
                     patient.requiereExamenes ||
-                    patient.requiereRemision) && (
+                    patient.requiereRemision ||
+                    isAttended ||
+                    (isTestPatient && patient.analisisEstructurado)) && (
                     <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between flex-wrap gap-2">
                       <div className="flex flex-wrap gap-1.5">
                         {patient.requiereSeguimiento && (
@@ -807,17 +862,18 @@ export default function HomePage() {
                         )}
                       </div>
 
-                      {isAttended && (
+                      {(isAttended || (isTestPatient && patient.analisisEstructurado)) && (
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             setPrintPatient(patient);
                           }}
-                          className="text-xs font-extrabold text-teja-600 hover:text-teja-800 flex items-center gap-1 bg-teja-50 px-2.5 py-1 rounded-lg"
+                          className="text-xs font-extrabold text-teja-600 hover:text-teja-800 flex items-center gap-1 bg-teja-50 hover:bg-teja-100 px-2.5 py-1 rounded-lg transition"
+                          title="Ver y descargar orden médica o compartir por WhatsApp"
                         >
                           <FileText className="w-3.5 h-3.5" />
-                          Ver Orden / WhatsApp
+                          <span>{isTestPatient ? "Ver Orden de Prueba" : "Ver Orden / WhatsApp"}</span>
                           <ChevronRight className="w-3.5 h-3.5" />
                         </button>
                       )}

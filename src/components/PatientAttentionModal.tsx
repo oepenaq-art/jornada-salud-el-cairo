@@ -419,9 +419,13 @@ export default function PatientAttentionModal({
       note.examenFisico.trim() ||
       note.planYJustificacion.trim();
 
+    const isTestPatient =
+      currentPatientData.id === "pac-prueba" ||
+      currentPatientData.nombre.toLowerCase().includes("paciente prueba");
+
     const updated: Patient = {
       ...currentPatientData,
-      estado: "atendido",
+      estado: isTestPatient ? "pendiente" : "atendido",
       requiereSeguimiento,
       requiereExamenes,
       requiereRemision,
@@ -548,6 +552,36 @@ export default function PatientAttentionModal({
             </div>
           )}
         </div>
+
+        {/* Banner de Modo Práctica Ilimitada si es el Paciente Prueba */}
+        {(currentPatientData.id === "pac-prueba" || currentPatientData.nombre.toLowerCase().includes("paciente prueba")) && (
+          <div className="bg-emerald-50 border-2 border-emerald-500 rounded-2xl p-4 shadow-sm space-y-2.5">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 bg-emerald-700 text-white text-xs font-black px-3 py-1 rounded-xl uppercase tracking-wider shadow-sm">
+                🧪 Modo Práctica Ilimitada
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setAudioBlob(null);
+                  if (audioUrl) URL.revokeObjectURL(audioUrl);
+                  setAudioUrl(null);
+                  setRecordingSeconds(0);
+                  setRawDictationText("");
+                  setNote(EMPTY_NOTE);
+                  setAiError(null);
+                  setAiSuccessMsg("Pizarra reiniciada. Puedes grabar o dictar un nuevo audio de prueba.");
+                }}
+                className="text-xs font-extrabold text-emerald-900 bg-emerald-200 hover:bg-emerald-300 px-3 py-1.5 rounded-xl transition border border-emerald-400 active:scale-95 shadow-sm"
+              >
+                🔄 Limpiar para Nuevo Audio
+              </button>
+            </div>
+            <p className="text-xs text-emerald-950 leading-relaxed font-medium">
+              Este paciente fue creado para que los médicos y estudiantes practiquen la grabación de voz y estructuración con IA sin límites. Al hacer clic en <strong>Guardar Atención</strong> o <strong>Guardar y Ver Orden</strong>, tu nota se guardará y el paciente <strong>seguirá siempre disponible</strong> para realizar más prácticas.
+            </p>
+          </div>
+        )}
 
         {/* PASO 1: CHECKLIST DE CONDUCTA (Botones táctiles grandes) */}
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200 space-y-3">

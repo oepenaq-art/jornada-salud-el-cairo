@@ -49,6 +49,22 @@ export const MEDICOS_INICIALES: Doctor[] = [
 
 export const PACIENTES_INICIALES: Patient[] = [
   {
+    id: 'pac-prueba',
+    tipoDocumento: 'CC',
+    documento: '000000000',
+    nombre: 'Paciente Prueba (Práctica de Audios)',
+    edad: 35,
+    sexo: 'M',
+    telefono: '3000000000',
+    veredaBarrio: 'Consultorio de Práctica',
+    especialidad: 'Todas las Especialidades',
+    motivoInicial: 'Práctica libre de grabación de audio y estructuración médica con IA (Atenciones Infinitas)',
+    estado: 'pendiente',
+    requiereSeguimiento: false,
+    requiereExamenes: false,
+    requiereRemision: false
+  },
+  {
     id: 'pac-001',
     tipoDocumento: 'RC',
     documento: '1112796556',

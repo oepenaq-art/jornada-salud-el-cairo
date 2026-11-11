@@ -55,3 +55,52 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Reglas de impresión para el documento oficial y órdenes médicas */
+@media print {
+  body {
+    background: white !important;
+    color: #111827 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ocultar interfaz no deseada al imprimir */
+  header,
+  footer,
+  nav,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Asegurar que el modal ocupe toda la hoja sin fondo oscuro ni scroll */
+  .fixed {
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+  }
+
+  .shadow-2xl,
+  .shadow-xl,
+  .shadow-lg,
+  .shadow-md {
+    box-shadow: none !important;
+  }
+
+  .max-w-2xl,
+  .max-w-3xl {
+    max-width: 100% !important;
+  }
+
+  /* Evitar cortes indeseados en títulos y firmas */
+  .break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+}
