@@ -241,9 +241,13 @@ export default function HomePage() {
     localStorage.setItem("tejas_active_specialty", esp);
     if (esp !== "Todas") {
       const normEsp = normalizeText(esp);
-      const matchingDoc = doctors.find(
-        (d) => normalizeText(d.especialidad).includes(normEsp)
-      );
+      const matchingDoc = doctors.find((d) => {
+        const canonical = normalizeText(getCanonicalSpecialty(d.especialidad));
+        return (
+          canonical.includes(normEsp) ||
+          normalizeText(d.especialidad).includes(normEsp)
+        );
+      });
       if (matchingDoc) {
         setActiveDoctor(matchingDoc.nombre);
         localStorage.setItem("tejas_active_doctor", matchingDoc.nombre);
@@ -459,7 +463,7 @@ export default function HomePage() {
               >
                 {doctors.map((d) => (
                   <option key={d.id} value={d.nombre}>
-                    {cleanMojibake(d.nombre)} ({getCanonicalSpecialty(d.especialidad)})
+                    {cleanMojibake(d.nombre)} ({cleanMojibake(d.especialidad)})
                   </option>
                 ))}
               </select>

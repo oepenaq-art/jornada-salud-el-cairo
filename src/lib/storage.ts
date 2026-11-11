@@ -33,8 +33,23 @@ function openDB(): Promise<IDBDatabase> {
   });
 }
 
+const CURRENT_DATASET_VERSION = "2026_11_11_v5_clean_full_data";
+
 export async function loadPatients(): Promise<Patient[]> {
   try {
+    const savedVer =
+      typeof window !== "undefined"
+        ? localStorage.getItem("tejas_dataset_version")
+        : null;
+
+    if (savedVer !== CURRENT_DATASET_VERSION) {
+      await saveAllPatients(PACIENTES_INICIALES, true);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("tejas_dataset_version", CURRENT_DATASET_VERSION);
+      }
+      return PACIENTES_INICIALES;
+    }
+
     const db = await openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE_PATIENTS, "readonly");
@@ -43,7 +58,7 @@ export async function loadPatients(): Promise<Patient[]> {
       req.onsuccess = async () => {
         const result = req.result as Patient[];
         if (!result || result.length === 0) {
-          await saveAllPatients(PACIENTES_INICIALES);
+          await saveAllPatients(PACIENTES_INICIALES, true);
           resolve(PACIENTES_INICIALES);
         } else {
           resolve(result);
@@ -90,8 +105,23 @@ export async function saveAllPatients(patients: Patient[], replaceAll = false): 
   }
 }
 
+const CURRENT_DOCTORS_VERSION = "2026_11_11_v4_official32";
+
 export async function loadDoctors(): Promise<Doctor[]> {
   try {
+    const savedVer =
+      typeof window !== "undefined"
+        ? localStorage.getItem("tejas_doctors_version")
+        : null;
+
+    if (savedVer !== CURRENT_DOCTORS_VERSION) {
+      await saveAllDoctors(MEDICOS_INICIALES, true);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("tejas_doctors_version", CURRENT_DOCTORS_VERSION);
+      }
+      return MEDICOS_INICIALES;
+    }
+
     const db = await openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(STORE_DOCTORS, "readonly");
@@ -100,7 +130,7 @@ export async function loadDoctors(): Promise<Doctor[]> {
       req.onsuccess = async () => {
         const result = req.result as Doctor[];
         if (!result || result.length === 0) {
-          await saveAllDoctors(MEDICOS_INICIALES);
+          await saveAllDoctors(MEDICOS_INICIALES, true);
           resolve(MEDICOS_INICIALES);
         } else {
           resolve(result);
