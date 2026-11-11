@@ -1,14 +1,14 @@
-import { Doctor, Patient } from "../types/medical";
+﻿import { Doctor, Patient } from "../types/medical";
 
 export const ESPECIALIDADES_JORNADA = [
-  "Pediatr\u00EDa",
+  "Pediatría",
   "Medicina General",
-  "Dermatolog\u00EDa",
-  "Urolog\u00EDa",
-  "Optometr\u00EDa",
-  "Odontolog\u00EDa",
+  "Dermatología",
+  "Urología",
+  "Optometría",
+  "Odontología",
   "Fisioterapia",
-  "Enfermer\u00EDa",
+  "Enfermería",
   "Estudiante de Medicina"
 ];
 
@@ -50,7 +50,7 @@ export const MEDICOS_INICIALES: Doctor[] = [
 export const PACIENTES_INICIALES: Patient[] = [
   {
     id: 'pac-001',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112796556',
     nombre: 'Jacob Toro Blandón',
     edad: 1,
@@ -66,7 +66,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-002',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1114088019',
     nombre: 'Dahiana Blandon Ospina',
     edad: 22,
@@ -82,7 +82,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-003',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112782633',
     nombre: 'Thaliana Macías Ramirez',
     edad: 14,
@@ -98,7 +98,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-004',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112904238',
     nombre: 'Verónica',
     edad: 29,
@@ -114,7 +114,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-005',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006246073',
     nombre: 'Natalia Zapata Quintero',
     edad: 30,
@@ -130,7 +130,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-006',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907095',
     nombre: 'Oliver Amaya Valencia',
     edad: 0,
@@ -146,7 +146,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-007',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906961',
     nombre: 'Zoe González Galeano',
     edad: 3,
@@ -162,7 +162,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-008',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006247752',
     nombre: 'Katherin Gabriela Galeano Arias',
     edad: 23,
@@ -178,7 +178,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-009',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463271',
     nombre: 'Ana Lid Salazar Gallego',
     edad: 68,
@@ -194,7 +194,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-010',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907092',
     nombre: 'Benjamin Buitrago Aguirre',
     edad: 0,
@@ -210,7 +210,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-011',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1088026454',
     nombre: 'Mariana Sanz Díaz',
     edad: 12,
@@ -226,7 +226,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-012',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906543',
     nombre: 'Luciano Buitrago Aguirre',
     edad: 9,
@@ -242,7 +242,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-013',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1110380470',
     nombre: 'María Belén Buitrago Aguirre',
     edad: 5,
@@ -258,7 +258,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-014',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1092037640',
     nombre: 'Amalianny Saray Ortega Avendaño',
     edad: 2,
@@ -274,7 +274,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-015',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1076353273',
     nombre: 'Everth Aldair Soto Soto',
     edad: 5,
@@ -290,7 +290,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-016',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907031',
     nombre: 'Everyn Valeria Soto Soto',
     edad: 1,
@@ -306,7 +306,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-017',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906729',
     nombre: 'Isabella Rodriguez Marin',
     edad: 7,
@@ -322,7 +322,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-018',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907069',
     nombre: 'Jerónimo Macías Blandón',
     edad: 0,
@@ -338,7 +338,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-019',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463616',
     nombre: 'Mariela Bohorquez Palacios',
     edad: 68,
@@ -354,7 +354,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-020',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1088885803',
     nombre: 'Dylan Yesid Ocampo',
     edad: 7,
@@ -370,7 +370,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-021',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906901',
     nombre: 'Danna Lizeth Agudelo Montoya',
     edad: 4,
@@ -386,7 +386,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-022',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1105897353',
     nombre: 'Dylan Alejandro Agudelo Montoya',
     edad: 11,
@@ -402,7 +402,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-023',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29467185',
     nombre: 'Marleny De Jesus Rendon Zuleta',
     edad: 63,
@@ -418,7 +418,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-024',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906869',
     nombre: 'Ian Alexis Montoya Giraldo',
     edad: 5,
@@ -434,7 +434,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-025',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907082',
     nombre: 'Celeste Ocampo González',
     edad: 0,
@@ -450,7 +450,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-026',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906952',
     nombre: 'Isabella',
     edad: 3,
@@ -466,7 +466,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-027',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112904990',
     nombre: 'Gloria Delsy Soto',
     edad: 37,
@@ -482,7 +482,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-028',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906509',
     nombre: 'Samantha Valencia',
     edad: 10,
@@ -498,7 +498,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-029',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906058',
     nombre: 'Andrés Felipe García Rincón',
     edad: 13,
@@ -514,7 +514,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-030',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907083',
     nombre: 'María Isabel Pelae López',
     edad: 3,
@@ -530,7 +530,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-031',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907048',
     nombre: 'Jeilen Naiara Tejada Franco',
     edad: 1,
@@ -546,7 +546,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-032',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112905078',
     nombre: 'Carlosalbertoriveraescudero',
     edad: 36,
@@ -562,7 +562,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-033',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907033',
     nombre: 'Danna Liceth Ríos Tamayo',
     edad: 21,
@@ -578,7 +578,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-034',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906887',
     nombre: 'Jesús David Peláez López',
     edad: 5,
@@ -594,7 +594,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-035',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906818',
     nombre: 'Ian Jerónimo Ríos Naranjo',
     edad: 5,
@@ -610,7 +610,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-036',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463879',
     nombre: 'Omaira López Villegas',
     edad: 61,
@@ -626,7 +626,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-037',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906781',
     nombre: 'Salome',
     edad: 6,
@@ -642,7 +642,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-038',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464305',
     nombre: 'Paula Andrea Díaz Rendón',
     edad: 55,
@@ -658,7 +658,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-039',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1089625997',
     nombre: 'Anyi Marcela Villa López',
     edad: 11,
@@ -674,7 +674,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-040',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906875',
     nombre: 'Monserrat Díaz Rendón',
     edad: 5,
@@ -690,7 +690,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-041',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906482',
     nombre: 'Dulce María Molina Franco',
     edad: 10,
@@ -706,7 +706,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-042',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112905093',
     nombre: 'Diegoalejandroriveralopez',
     edad: 18,
@@ -722,7 +722,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-043',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906898',
     nombre: 'Alejandro Trejos Alarcon',
     edad: 4,
@@ -738,7 +738,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-044',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006247429',
     nombre: 'Yesica Yuranny Restrepo López',
     edad: 39,
@@ -754,7 +754,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-045',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112606411',
     nombre: 'María José Marín Valencia',
     edad: 10,
@@ -770,7 +770,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-046',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1116131117',
     nombre: 'Yamied Lopez Lopez',
     edad: 38,
@@ -786,7 +786,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-047',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907012',
     nombre: 'Juan José Quintero Vargas',
     edad: 2,
@@ -802,7 +802,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-048',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006321485',
     nombre: 'Luz Glavedis Vargas Restrepo',
     edad: 23,
@@ -818,7 +818,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-049',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1007662753',
     nombre: 'Verónica Franco Días',
     edad: 25,
@@ -834,7 +834,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-050',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29816207',
     nombre: 'Marta Liliana López Penagos',
     edad: 58,
@@ -850,7 +850,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-051',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '31996351',
     nombre: 'Blanca Nelly Bedoya',
     edad: 59,
@@ -866,7 +866,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-052',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112130113',
     nombre: 'Laura Valentina Álvarez García',
     edad: 10,
@@ -882,7 +882,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-053',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906879',
     nombre: 'Mathias Lopez Alzate',
     edad: 5,
@@ -898,7 +898,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-054',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1092865463',
     nombre: 'Liam Jerónimo Echeverry García',
     edad: 4,
@@ -914,7 +914,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-055',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907074',
     nombre: 'Juan Esteban Lopez Alzate',
     edad: 0,
@@ -930,7 +930,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-056',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112905616',
     nombre: 'Monica Vanessa Lopez Alzate',
     edad: 34,
@@ -946,7 +946,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-057',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112796676',
     nombre: 'Elody Daelyn Echeverry Messa',
     edad: 0,
@@ -962,7 +962,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-058',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906202',
     nombre: 'Salvador Osorio Rios',
     edad: 12,
@@ -978,7 +978,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-059',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1114164207',
     nombre: 'Efran Steve Echeverry Messa',
     edad: 6,
@@ -994,7 +994,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-060',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906047',
     nombre: 'Alejandro Ríos Naranjo',
     edad: 13,
@@ -1010,7 +1010,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-061',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906554',
     nombre: 'Emmanuel Osorio Ríos',
     edad: 9,
@@ -1026,7 +1026,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-062',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464228',
     nombre: 'Maria Zulay García Arbeláez',
     edad: 63,
@@ -1042,7 +1042,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-063',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906824',
     nombre: 'Monserrat Gómez Giraldo',
     edad: 5,
@@ -1058,7 +1058,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-064',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1113858849',
     nombre: 'Eysa Daniela Messa Cano',
     edad: 22,
@@ -1074,7 +1074,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-065',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6284020',
     nombre: 'Luis Ancizar Lopez Penagos',
     edad: 54,
@@ -1090,7 +1090,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-066',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1150690754',
     nombre: 'Ismael Andrés Salazar Posada',
     edad: 14,
@@ -1106,7 +1106,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-067',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907024',
     nombre: 'Juan Diego Gómez Giraldo',
     edad: 1,
@@ -1122,7 +1122,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-068',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1110054263',
     nombre: 'Luis Alberto Salazar Posada',
     edad: 12,
@@ -1138,7 +1138,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-069',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1114627740',
     nombre: 'Paula Andrea Núñez Ramos',
     edad: 7,
@@ -1154,7 +1154,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-070',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906539',
     nombre: 'Emanuel Castañeda Arboleda',
     edad: 9,
@@ -1170,7 +1170,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-071',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464919',
     nombre: 'Dora María Rincón Reyes',
     edad: 50,
@@ -1186,7 +1186,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-072',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '2940063278',
     nombre: 'María Elsa Agudelo',
     edad: 70,
@@ -1202,7 +1202,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-073',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907091',
     nombre: 'Liam Santiago Blandón Quiceno',
     edad: 0,
@@ -1218,7 +1218,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-074',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1118303261',
     nombre: 'Ana Posada',
     edad: 32,
@@ -1234,7 +1234,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-075',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906142',
     nombre: 'Juan José Baena Giraldo',
     edad: 12,
@@ -1250,7 +1250,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-076',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907065',
     nombre: 'Juan Stevan Pineda Pineda',
     edad: 1,
@@ -1266,7 +1266,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-077',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1114163142',
     nombre: 'Emanuel Pineda Pineda',
     edad: 8,
@@ -1282,7 +1282,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-078',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906894',
     nombre: 'Nicol Sofía Cardona Cano',
     edad: 4,
@@ -1298,7 +1298,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-079',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '93010001',
     nombre: 'Gustavo Salazar Giraldo',
     edad: 69,
@@ -1314,7 +1314,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-080',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1088887014',
     nombre: 'Gerónimo Pineda Zapata',
     edad: 3,
@@ -1330,7 +1330,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-081',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463047',
     nombre: 'Alba Adela Pineda',
     edad: 68,
@@ -1346,7 +1346,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-082',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906840',
     nombre: 'Juan José Gegari Valencia',
     edad: 5,
@@ -1362,7 +1362,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-083',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112907068',
     nombre: 'Seher Ahilany Ramirez Marin',
     edad: 1,
@@ -1378,7 +1378,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-084',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907078',
     nombre: 'Erick Leandro Rivera Hoyos',
     edad: 6,
@@ -1394,7 +1394,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-085',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906884',
     nombre: 'Zarick Emiliana Wilches Hoyos',
     edad: 5,
@@ -1410,7 +1410,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-086',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '18590568',
     nombre: 'Carlos Alberto Galvis Duque',
     edad: 65,
@@ -1426,7 +1426,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-087',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1007662608',
     nombre: 'Soley Pineda Osorio',
     edad: 26,
@@ -1442,7 +1442,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-088',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906311',
     nombre: 'Matias Patiño',
     edad: 11,
@@ -1458,7 +1458,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-089',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906359',
     nombre: 'Salomé Morales Valencia',
     edad: 10,
@@ -1474,7 +1474,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-090',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006095018',
     nombre: 'Yaneth Montoya Moreno',
     edad: 33,
@@ -1490,7 +1490,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-091',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906823',
     nombre: 'Renata Giraldo Giraldo',
     edad: 5,
@@ -1506,7 +1506,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-092',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906964',
     nombre: 'Juan Antonio Giraldo Giraldo',
     edad: 3,
@@ -1522,7 +1522,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-093',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '112905467',
     nombre: 'Yesica Viviana Patiño Henao',
     edad: 34,
@@ -1538,7 +1538,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-094',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112905467',
     nombre: 'Yesica Viviana Patiño Henao',
     edad: 34,
@@ -1554,7 +1554,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-095',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464798',
     nombre: 'Maria Yulied Gonzalez',
     edad: 47,
@@ -1570,7 +1570,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-096',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29462909',
     nombre: 'Alba Alicia Alvarez',
     edad: 73,
@@ -1586,7 +1586,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-097',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463568',
     nombre: 'Martha Lucía Ríos Cinfuentes',
     edad: 63,
@@ -1602,7 +1602,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-098',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1115268005',
     nombre: 'Jhon Alexander Valencia Giraldo',
     edad: 22,
@@ -1618,7 +1618,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-099',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006247399',
     nombre: 'Erika Viviana Palacio Toro',
     edad: 35,
@@ -1634,7 +1634,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-100',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1121199035',
     nombre: 'Nestor Duglas León Puricho',
     edad: 40,
@@ -1650,7 +1650,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-101',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906139',
     nombre: 'Valery Samantha León Palacio',
     edad: 12,
@@ -1666,7 +1666,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-102',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6281867',
     nombre: 'Gilberto De Jesús Gallon López',
     edad: 62,
@@ -1682,7 +1682,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-103',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907011',
     nombre: 'Paulina Betancur Buritica',
     edad: 2,
@@ -1698,7 +1698,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-104',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112904543',
     nombre: 'Mayra Alejandra',
     edad: 39,
@@ -1714,7 +1714,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-105',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112906217',
     nombre: 'Francy Yulieth Toro Cano',
     edad: 30,
@@ -1730,7 +1730,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-106',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6280485',
     nombre: 'Luis Eduardo Barco Morales',
     edad: 69,
@@ -1746,7 +1746,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-107',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906999',
     nombre: 'Jóse Ángel Parra Marín',
     edad: 2,
@@ -1762,7 +1762,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-108',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1235144346',
     nombre: 'Evelyn Andrea Montes Tabares',
     edad: 6,
@@ -1778,7 +1778,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-109',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906461',
     nombre: 'Nahomy Aguirre Parra',
     edad: 10,
@@ -1794,7 +1794,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-110',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29465019',
     nombre: 'Alba Libia Torres Cardona',
     edad: 45,
@@ -1810,7 +1810,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-111',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006247782',
     nombre: 'Tatiana Tabares Torres',
     edad: 24,
@@ -1826,7 +1826,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-112',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907035',
     nombre: 'Hian Vélez Restrepo',
     edad: 22,
@@ -1842,7 +1842,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-113',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906968',
     nombre: 'Luciana Vélez Restrepo',
     edad: 3,
@@ -1858,7 +1858,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-114',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1255818011',
     nombre: 'Nazareth Miranda Zapata',
     edad: 2,
@@ -1874,7 +1874,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-115',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006247840',
     nombre: 'Natalia Baena Giraldo',
     edad: 23,
@@ -1890,7 +1890,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-116',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906646',
     nombre: 'Carol Dayana',
     edad: 9,
@@ -1906,7 +1906,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-117',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907088',
     nombre: 'Eithan Stiven Ortiz Carvajal',
     edad: 3,
@@ -1922,7 +1922,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-118',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906947',
     nombre: 'Nikol Dahiana Palacios Carvajal',
     edad: 3,
@@ -1938,7 +1938,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-119',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1307',
     nombre: 'Ethan Jesús López Zambrano',
     edad: 4,
@@ -1954,7 +1954,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-120',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1635',
     nombre: 'Frenyer Mathias López Zambrano',
     edad: 7,
@@ -1970,7 +1970,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-121',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1088040672',
     nombre: 'Maicol Dorado Ballesteros',
     edad: 7,
@@ -1986,7 +1986,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-122',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907049',
     nombre: 'Alison Serna Cartagena',
     edad: 18,
@@ -2002,7 +2002,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-123',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006294200',
     nombre: 'Yeleima Sofia Navarro Orejuela',
     edad: 22,
@@ -2018,7 +2018,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-124',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906922',
     nombre: 'Emily Xiomara Ballesteros Galvis',
     edad: 4,
@@ -2034,7 +2034,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-125',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006247422',
     nombre: 'Carolina Galvis',
     edad: 37,
@@ -2050,7 +2050,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-126',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112904015',
     nombre: 'José Joany Restrepo Lopez',
     edad: 41,
@@ -2066,7 +2066,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-127',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112906403',
     nombre: 'Solangel Ospina Agudelo',
     edad: 61,
@@ -2082,7 +2082,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-128',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464280',
     nombre: 'María Patricia Herrera S',
     edad: 55,
@@ -2098,7 +2098,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-129',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1053816590',
     nombre: 'Yelicen Doraine Ruiz Valencia',
     edad: 34,
@@ -2114,7 +2114,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-130',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464092',
     nombre: 'Solangel Ospina',
     edad: 61,
@@ -2130,7 +2130,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-131',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1054873848',
     nombre: 'Leidy Yurani Rodriguez Ruiz',
     edad: 16,
@@ -2146,7 +2146,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-132',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1023571632',
     nombre: 'Yeicko Alejandro Rodriguez Ruiz',
     edad: 1,
@@ -2162,7 +2162,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-133',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1023571633',
     nombre: 'Yacko Fernando Rodriguez Ruiz',
     edad: 1,
@@ -2178,7 +2178,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-134',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464320',
     nombre: 'María Nuvia Giraldo',
     edad: 53,
@@ -2194,7 +2194,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-135',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1092913974',
     nombre: 'Franklin Villada Ballesteros',
     edad: 15,
@@ -2210,7 +2210,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-136',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112634928',
     nombre: 'Maria Guadalupe Marin Arias',
     edad: 2,
@@ -2226,7 +2226,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-137',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1003851665',
     nombre: 'Uber Soto Gil',
     edad: 40,
@@ -2242,7 +2242,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-138',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906944',
     nombre: 'Darwin Alejandro Osorio Jiménez',
     edad: 4,
@@ -2258,7 +2258,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-139',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464217',
     nombre: 'Gloria Yaneth Castaño Alzate',
     edad: 55,
@@ -2274,7 +2274,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-140',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112906171',
     nombre: 'Natalia Hurtado Herrera',
     edad: 30,
@@ -2290,7 +2290,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-141',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112904676',
     nombre: 'Allisson Hurtado Muñoz',
     edad: 8,
@@ -2306,7 +2306,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-142',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906776',
     nombre: 'Allisson Hurtado Muñoz',
     edad: 8,
@@ -2322,7 +2322,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-143',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906683',
     nombre: 'Dilan Hernández Quintero',
     edad: 8,
@@ -2338,7 +2338,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-144',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906971',
     nombre: 'Thiago López Hurtado',
     edad: 3,
@@ -2354,7 +2354,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-145',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112905498',
     nombre: 'Mónica Andrea Hurtado Cardona',
     edad: 34,
@@ -2370,7 +2370,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-146',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906889',
     nombre: 'Victoria Zapata Hurtado',
     edad: 5,
@@ -2386,7 +2386,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-147',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112904676',
     nombre: 'Sandra Liliana Hurtado Muñoz',
     edad: 38,
@@ -2402,7 +2402,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-148',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906401',
     nombre: 'Keyner López Hurtado',
     edad: 10,
@@ -2418,7 +2418,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-149',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906624',
     nombre: 'Emiliano Marín Gómez',
     edad: 9,
@@ -2434,7 +2434,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-150',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112906345',
     nombre: 'Angie Paola Gómez',
     edad: 29,
@@ -2450,7 +2450,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-151',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1006247547',
     nombre: 'Luz Enith',
     edad: 37,
@@ -2466,7 +2466,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-152',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112905644',
     nombre: 'Elizabeth Marin',
     edad: 15,
@@ -2482,7 +2482,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-153',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464543',
     nombre: 'Maria Luceyi Osorio',
     edad: 57,
@@ -2498,7 +2498,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-154',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907077',
     nombre: 'Martín Andrés Molina Zapata',
     edad: 0,
@@ -2514,7 +2514,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-155',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1044013538',
     nombre: 'Santiago Osorio Serna',
     edad: 6,
@@ -2530,7 +2530,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-156',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906367',
     nombre: 'Juan Jose Pedroza Jaramillo',
     edad: 10,
@@ -2546,7 +2546,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-157',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906937',
     nombre: 'Kendall Sofia Mesa Montes',
     edad: 4,
@@ -2562,7 +2562,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-158',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1114092754',
     nombre: 'Kelly Johanna Aristizabal Posada',
     edad: 33,
@@ -2578,7 +2578,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-159',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112935888',
     nombre: 'Eimy Hernández Aristizabal',
     edad: 4,
@@ -2594,7 +2594,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-160',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '31421446',
     nombre: 'Virgelina Posada Piedrahíta',
     edad: 53,
@@ -2610,7 +2610,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-161',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1061626466',
     nombre: 'Germán Dario Valencia Grajales',
     edad: 31,
@@ -2626,7 +2626,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-162',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1111558724',
     nombre: 'Luciana Amaya Ocampo',
     edad: 12,
@@ -2642,7 +2642,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-163',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1010251734',
     nombre: 'Emmanuel Gallego García',
     edad: 5,
@@ -2658,7 +2658,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-164',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1220226210',
     nombre: 'Emiliano Gallego García',
     edad: 8,
@@ -2674,7 +2674,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-165',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1057306484',
     nombre: 'José Miguel Martinez Vasquez',
     edad: 6,
@@ -2690,7 +2690,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-166',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463995',
     nombre: 'Aleida Miranda',
     edad: 61,
@@ -2706,7 +2706,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-167',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906828',
     nombre: 'Khalani Fernanda Pito Florez',
     edad: 5,
@@ -2722,7 +2722,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-168',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906966',
     nombre: 'Isabella Guerrero Cardona',
     edad: 3,
@@ -2738,7 +2738,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-169',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1096008063',
     nombre: 'Danna Mikeila Marcial',
     edad: 5,
@@ -2754,7 +2754,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-170',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906923',
     nombre: 'Dilan Andrés Medina Gonzalez',
     edad: 5,
@@ -2770,7 +2770,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-171',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906970',
     nombre: 'Yorladi Medina Gonzalez',
     edad: 3,
@@ -2786,7 +2786,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-172',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907019',
     nombre: 'Jeyder Sucre Gonzalez',
     edad: 4,
@@ -2802,7 +2802,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-173',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1144217299',
     nombre: 'Isaac Abdiel. Sanguineo Quintero',
     edad: 12,
@@ -2818,7 +2818,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-174',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906871',
     nombre: 'David Medina Cano',
     edad: 5,
@@ -2834,7 +2834,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-175',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907034',
     nombre: 'Mayery Sucre Gonzalez',
     edad: 2,
@@ -2850,7 +2850,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-176',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1144217300',
     nombre: 'Thiago Sanguineo Quintero',
     edad: 1,
@@ -2866,7 +2866,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-177',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907084',
     nombre: 'Samara Tanigama Medina',
     edad: 1,
@@ -2882,7 +2882,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-178',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1116133429',
     nombre: 'Carlos Julián Ramírez Ochoa',
     edad: 4,
@@ -2898,7 +2898,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-179',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907025',
     nombre: 'Matías Gonzalez Medina',
     edad: 1,
@@ -2914,7 +2914,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-180',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '24791156',
     nombre: 'Luz Stella Arias Garcia',
     edad: 48,
@@ -2930,7 +2930,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-181',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1002863478',
     nombre: 'Valentina Hurtado Arias',
     edad: 25,
@@ -2946,7 +2946,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-182',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906985',
     nombre: 'Susana Ríos Martinez',
     edad: 3,
@@ -2962,7 +2962,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-183',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '42015011',
     nombre: 'Piedad Correa Jiménez',
     edad: 49,
@@ -2978,7 +2978,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-184',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6281826',
     nombre: 'José William Barco Betancourth',
     edad: 61,
@@ -2994,7 +2994,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-185',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29462538',
     nombre: 'María Doralisa Jiménez Muñoz',
     edad: 72,
@@ -3010,7 +3010,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-186',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112905924',
     nombre: 'Martín Barco Correa',
     edad: 14,
@@ -3026,7 +3026,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-187',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906752',
     nombre: 'Guadalupe López Vargas',
     edad: 7,
@@ -3042,7 +3042,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-188',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112905194',
     nombre: 'Veronica Hernandez Quintero',
     edad: 22,
@@ -3058,7 +3058,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-189',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6284712',
     nombre: 'Juan José Serna Aristizábal',
     edad: 67,
@@ -3074,7 +3074,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-190',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906772',
     nombre: 'Emiliano Zapata Giraldo',
     edad: 6,
@@ -3090,7 +3090,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-191',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907039',
     nombre: 'Joan Alexis Orozco Zapata',
     edad: 1,
@@ -3106,7 +3106,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-192',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906261',
     nombre: 'Juan José Agudelo Zapata',
     edad: 11,
@@ -3122,7 +3122,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-193',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906732',
     nombre: 'Miguel Ángel Rincon Zapata',
     edad: 7,
@@ -3138,7 +3138,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-194',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1146153263',
     nombre: 'Mariana Galeano Ospina',
     edad: 2,
@@ -3154,7 +3154,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-195',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '94190051',
     nombre: 'Luis Hernando Rendon Zuleta',
     edad: 68,
@@ -3170,7 +3170,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-196',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '71875712',
     nombre: 'Juan Carlos Jimenez Espinosa',
     edad: 62,
@@ -3186,7 +3186,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-197',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1151943643',
     nombre: 'Franci Elena Echeverri Gallego',
     edad: 34,
@@ -3202,7 +3202,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-198',
-    tipoDocumento: 'PPT' as Patient['tipoDocumento'],
+    tipoDocumento: 'PPT',
     documento: '6963941',
     nombre: 'Yonaiker Alexander Navarro Heredia',
     edad: 9,
@@ -3218,7 +3218,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-199',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906274',
     nombre: 'Evelyn Sofia Zapata Cardona',
     edad: 11,
@@ -3234,7 +3234,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-200',
-    tipoDocumento: 'PPT' as Patient['tipoDocumento'],
+    tipoDocumento: 'PPT',
     documento: '6964630',
     nombre: 'Yarismar Alexandra Heredia Egunola',
     edad: 13,
@@ -3250,7 +3250,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-201',
-    tipoDocumento: 'PPT' as Patient['tipoDocumento'],
+    tipoDocumento: 'PPT',
     documento: '69653734',
     nombre: 'Yorleidys Carolina Heredia Egunola',
     edad: 31,
@@ -3266,7 +3266,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-202',
-    tipoDocumento: 'PPT' as Patient['tipoDocumento'],
+    tipoDocumento: 'PPT',
     documento: '8280212',
     nombre: 'Milianjelis Análisis Sánchez López',
     edad: 13,
@@ -3282,7 +3282,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-203',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1004670981',
     nombre: 'Estefania Hurtado Arias',
     edad: 26,
@@ -3298,7 +3298,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-204',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1128910289',
     nombre: 'Evelyn Dahiana Loaiza Orozco',
     edad: 8,
@@ -3314,7 +3314,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-205',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6281534',
     nombre: 'Luis Octavio Orozco Gaviria',
     edad: 65,
@@ -3330,7 +3330,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-206',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463661',
     nombre: 'Maria Yolanda Muñoz Quintero',
     edad: 61,
@@ -3346,7 +3346,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-207',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463586',
     nombre: 'María Inés Cardona',
     edad: 70,
@@ -3362,7 +3362,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-208',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463963',
     nombre: 'Omaira Ortega Tapias',
     edad: 57,
@@ -3378,7 +3378,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-209',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1234146391',
     nombre: 'Jhonatan Emir Montoya Palacios',
     edad: 4,
@@ -3394,7 +3394,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-210',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1196713121',
     nombre: 'Ilder Aleicer Montoya Palacioa',
     edad: 17,
@@ -3410,7 +3410,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-211',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '52487031',
     nombre: 'Marleny Palacios Lopez',
     edad: 48,
@@ -3426,7 +3426,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-212',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1079388766',
     nombre: 'Gladis Amado Sarrias',
     edad: 39,
@@ -3442,7 +3442,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-213',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112905960',
     nombre: 'Laura Sofía Idarraga Amado',
     edad: 13,
@@ -3458,7 +3458,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-214',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906316',
     nombre: 'Mariana Idarraga Amado',
     edad: 11,
@@ -3474,7 +3474,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-215',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112421224',
     nombre: 'Juan De Dios Idarraga Amado',
     edad: 17,
@@ -3490,7 +3490,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-216',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464312',
     nombre: 'Maria Elvia Buriticà López',
     edad: 66,
@@ -3506,7 +3506,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-217',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464516',
     nombre: 'María Nilbia Ortega Tapias',
     edad: 50,
@@ -3522,7 +3522,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-218',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6281512',
     nombre: 'Argemiro De Jesús Galeano Naranjo',
     edad: 67,
@@ -3538,7 +3538,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-219',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6282469',
     nombre: 'Alexander Carmona Vallejo',
     edad: 48,
@@ -3554,7 +3554,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-220',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29470269',
     nombre: 'Luisa Evelia Buriticà De Hernandez',
     edad: 74,
@@ -3570,7 +3570,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-221',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906838',
     nombre: 'Magdiel Samara Rendón Ramírez',
     edad: 5,
@@ -3586,7 +3586,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-222',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906638',
     nombre: 'Juan Esteban Buriticacastro',
     edad: 9,
@@ -3602,7 +3602,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-223',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112906592',
     nombre: 'Silvia Lorena Jaramillo Restrepo',
     edad: 27,
@@ -3618,7 +3618,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-224',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1192731488',
     nombre: 'Sergio Daniel Osorio Vélez',
     edad: 22,
@@ -3634,7 +3634,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-225',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29465301',
     nombre: 'Luz Marleny Rivera Escudero',
     edad: 41,
@@ -3650,7 +3650,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-226',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906420',
     nombre: 'Laura Sofía Rivera Escudero',
     edad: 10,
@@ -3666,7 +3666,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-227',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29615452',
     nombre: 'Maria Luz Dary Castro',
     edad: 56,
@@ -3682,7 +3682,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-228',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906513',
     nombre: 'Mathias Toro Correa',
     edad: 10,
@@ -3698,7 +3698,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-229',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '10274502',
     nombre: 'Jhon Jairo Rodríguez Quintero',
     edad: 60,
@@ -3714,7 +3714,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-230',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '24726510',
     nombre: 'Luz Amparo Rodríguez De Gallego',
     edad: 64,
@@ -3730,7 +3730,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-231',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112905965',
     nombre: 'Michell Dayana Jiménez Cebaloz',
     edad: 13,
@@ -3746,7 +3746,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-232',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906002',
     nombre: 'José Angel Patiño Bermúdez',
     edad: 13,
@@ -3762,7 +3762,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-233',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29844124',
     nombre: 'Luz Stella Giraldo Herrera',
     edad: 57,
@@ -3778,7 +3778,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-234',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '3522406',
     nombre: 'Andresmauricio Ferreiro López',
     edad: 47,
@@ -3794,7 +3794,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-235',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '25163896',
     nombre: 'Francy Elena Gomez Mahecha',
     edad: 56,
@@ -3810,7 +3810,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-236',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '11112905606',
     nombre: 'Brisa Patiño Correa',
     edad: 16,
@@ -3826,7 +3826,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-237',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112905304',
     nombre: 'Sofía Barco Correa',
     edad: 17,
@@ -3842,7 +3842,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-238',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1143836338',
     nombre: 'Leidy Johana Marín Miranda',
     edad: 35,
@@ -3858,7 +3858,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-239',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1076352751',
     nombre: 'Angela Adelaida Correa Marin',
     edad: 43,
@@ -3874,7 +3874,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-240',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29467121',
     nombre: 'Martha Luz Moncada',
     edad: 67,
@@ -3890,7 +3890,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-241',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1114787555',
     nombre: 'José Yhonyer Salazar López',
     edad: 32,
@@ -3906,7 +3906,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-242',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1040201717',
     nombre: 'Camila Londoño Moncada',
     edad: 16,
@@ -3922,7 +3922,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-243',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '98509626',
     nombre: 'Gustavo De Jesús Londoño Arenas',
     edad: 57,
@@ -3938,7 +3938,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-244',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1040200475',
     nombre: 'Anderson Londoño Moncada',
     edad: 21,
@@ -3954,7 +3954,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-245',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1040200975',
     nombre: 'Valeria Sepulveda Arrubla',
     edad: 20,
@@ -3970,7 +3970,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-246',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '41935867',
     nombre: 'Sandra Milena Betancourt Plaza',
     edad: 50,
@@ -3986,7 +3986,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-247',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6281612',
     nombre: 'José Walter Lopez Olarte',
     edad: 62,
@@ -4002,7 +4002,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-248',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '21698438',
     nombre: 'Luz Denia Lezcano Lezcano',
     edad: 43,
@@ -4018,7 +4018,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-249',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1114097291',
     nombre: 'Eilán Andrés Duque Correa',
     edad: 5,
@@ -4034,7 +4034,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-250',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112905785',
     nombre: 'Eider Santiago Ballesteros Galvis',
     edad: 15,
@@ -4050,7 +4050,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-251',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112328417',
     nombre: 'Emily Sofia Pereira Giraldo',
     edad: 8,
@@ -4066,7 +4066,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-252',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906552',
     nombre: 'Jose Miguel Ramírez Bolaños',
     edad: 9,
@@ -4082,7 +4082,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-253',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1335280473',
     nombre: 'Paula Usuga Ruiz',
     edad: 36,
@@ -4098,7 +4098,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-254',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906988',
     nombre: 'Gael Hurtado Usuga',
     edad: 3,
@@ -4114,7 +4114,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-255',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1232798946',
     nombre: 'Salomé Hurtado',
     edad: 9,
@@ -4130,7 +4130,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-256',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1232798947',
     nombre: 'Luciana Hurtado',
     edad: 9,
@@ -4146,7 +4146,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-257',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112904268',
     nombre: 'Duberney Hurtado Muñoz',
     edad: 40,
@@ -4162,7 +4162,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-258',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463647',
     nombre: 'Luz Marina Rios Cifuentes',
     edad: 64,
@@ -4178,7 +4178,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-259',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112934014',
     nombre: 'Erika Andrea Cortes Yagary',
     edad: 12,
@@ -4194,7 +4194,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-260',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906589',
     nombre: 'Víctor Mauricio Medina Cano',
     edad: 9,
@@ -4210,7 +4210,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-261',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1076352695',
     nombre: 'Luz Karime Gonzalez Gegari',
     edad: 11,
@@ -4226,7 +4226,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-262',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1114096075',
     nombre: 'María Soraida Sucre Medina',
     edad: 8,
@@ -4242,7 +4242,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-263',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906702',
     nombre: 'Jhon Alex Medina Gegari',
     edad: 8,
@@ -4258,7 +4258,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-264',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '57791829',
     nombre: 'Angel Daniel Arroyo Henriquez',
     edad: 3,
@@ -4274,7 +4274,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-265',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1114163385',
     nombre: 'Sharol Ivon Namundia Cardona',
     edad: 8,
@@ -4290,7 +4290,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-266',
-    tipoDocumento: 'PERMISO TEMPORAL' as Patient['tipoDocumento'],
+    tipoDocumento: 'PERMISO TEMPORAL',
     documento: '6119107',
     nombre: 'Ayer Santiago Arroyo Henriquez',
     edad: 11,
@@ -4306,7 +4306,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-267',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906455',
     nombre: 'Jhon Estiven Tanigama Medina',
     edad: 10,
@@ -4322,7 +4322,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-268',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906731',
     nombre: 'José Daniel Medina Gegari',
     edad: 5,
@@ -4338,7 +4338,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-269',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906870',
     nombre: 'Diego Fernando Niaza Enevia',
     edad: 5,
@@ -4354,7 +4354,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-270',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '42026697',
     nombre: 'Elizabet Colorado Cardona',
     edad: 52,
@@ -4370,7 +4370,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-271',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906305',
     nombre: 'Esteban González Medina',
     edad: 11,
@@ -4386,7 +4386,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-272',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906886',
     nombre: 'Yuleidy Nicol Cortina Aizama',
     edad: 8,
@@ -4402,7 +4402,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-273',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906161',
     nombre: 'Dairon Cortona Cardona',
     edad: 12,
@@ -4418,7 +4418,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-274',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906711',
     nombre: 'Yoniza Medina González',
     edad: 8,
@@ -4434,7 +4434,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-275',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1114402526',
     nombre: 'Liceth Yurani Velez Cardona',
     edad: 10,
@@ -4450,7 +4450,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-276',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906658',
     nombre: 'Estefania Medina Gegari',
     edad: 9,
@@ -4466,7 +4466,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-277',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1114094983',
     nombre: 'Katherine Tamaniza Gegari',
     edad: 11,
@@ -4482,7 +4482,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-278',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1114788527',
     nombre: 'Jostin Gil Villa',
     edad: 6,
@@ -4498,7 +4498,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-279',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1114007138',
     nombre: 'Alejandro Alvarado Montenegro',
     edad: 13,
@@ -4514,7 +4514,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-280',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '38861242',
     nombre: 'Olga De Jesús Ríos',
     edad: 64,
@@ -4530,7 +4530,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-281',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '14877779',
     nombre: 'Jesús Antonio Quintero Aristizábal',
     edad: 71,
@@ -4546,7 +4546,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-282',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1232826551',
     nombre: 'Samuel Artemo Rodriguez Lopez',
     edad: 3,
@@ -4562,7 +4562,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-283',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1144216295',
     nombre: 'María Alejandra Aguirre Bohorquez',
     edad: 4,
@@ -4578,7 +4578,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-284',
-    tipoDocumento: 'NV' as Patient['tipoDocumento'],
+    tipoDocumento: 'NV',
     documento: '26098410307939',
     nombre: 'Niña Namundia Sucre',
     edad: 0,
@@ -4594,7 +4594,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-285',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6282044',
     nombre: 'German Hurtado Aristizabal',
     edad: 67,
@@ -4610,7 +4610,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-286',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906796',
     nombre: 'Jhon Sebastián Rodas Hernández',
     edad: 6,
@@ -4626,7 +4626,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-287',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '111290796',
     nombre: 'Jhon Sebastián Rodas Hernández',
     edad: 6,
@@ -4642,7 +4642,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-288',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906819',
     nombre: 'Samul Perea Marin',
     edad: 6,
@@ -4658,7 +4658,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-289',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6282300',
     nombre: 'Alcides Estrada Mafla',
     edad: 60,
@@ -4674,7 +4674,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-290',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906839',
     nombre: 'Ana Lucia Sucre Medina',
     edad: 5,
@@ -4690,7 +4690,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-291',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906686',
     nombre: 'Yuleidi Nicol Cortina Aisama',
     edad: 8,
@@ -4706,7 +4706,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-292',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906726',
     nombre: 'Licencia González Medina',
     edad: 7,
@@ -4722,7 +4722,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-293',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906464',
     nombre: 'Carol Viviana González Medina',
     edad: 10,
@@ -4738,7 +4738,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-294',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906250',
     nombre: 'Jhon Ander Marin González',
     edad: 12,
@@ -4754,7 +4754,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-295',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906068',
     nombre: 'Efrain Medina Gonzales',
     edad: 13,
@@ -4770,7 +4770,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-296',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906832',
     nombre: 'Laura Andrea Marin González',
     edad: 5,
@@ -4786,7 +4786,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-297',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906706',
     nombre: 'Yanelly González Medina',
     edad: 8,
@@ -4802,7 +4802,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-298',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1114095386',
     nombre: 'Claudia Vanessa Sucre Medina',
     edad: 10,
@@ -4818,7 +4818,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-299',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '11121299703',
     nombre: 'Aurian García González',
     edad: 13,
@@ -4834,7 +4834,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-300',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906331',
     nombre: 'Maritza García González',
     edad: 11,
@@ -4850,7 +4850,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-301',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906730',
     nombre: 'Esneider Sucre González',
     edad: 7,
@@ -4866,7 +4866,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-302',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1114161746',
     nombre: 'Dulce Michel Namundia Cardona',
     edad: 10,
@@ -4882,7 +4882,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-303',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '111906372',
     nombre: 'Edison González Gegari',
     edad: 11,
@@ -4898,7 +4898,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-304',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906796',
     nombre: 'Yaneli González Medina',
     edad: 8,
@@ -4914,7 +4914,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-305',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906383',
     nombre: 'Manuelito Cardona Niaza',
     edad: 10,
@@ -4930,7 +4930,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-306',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1119906331',
     nombre: 'Mariza García Gonzalez',
     edad: 11,
@@ -4946,7 +4946,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-307',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906591',
     nombre: 'Isabella Muñoz Quintero',
     edad: 9,
@@ -4962,7 +4962,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-308',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906751',
     nombre: 'Mateo Pazmiño Cruz',
     edad: 7,
@@ -4978,7 +4978,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-309',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906749',
     nombre: 'Liam Martinez Restrepo',
     edad: 7,
@@ -4994,7 +4994,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-310',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464642',
     nombre: 'Maria Del Carmen Restrepo',
     edad: 52,
@@ -5010,7 +5010,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-311',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907090',
     nombre: 'Ismael Dario Espriella Granada',
     edad: 0,
@@ -5026,7 +5026,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-312',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112907089',
     nombre: 'Elian David Castañeda Restrepo',
     edad: 0,
@@ -5042,7 +5042,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-313',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906995',
     nombre: 'Isabella Hernandez Rodríguez',
     edad: 2,
@@ -5058,7 +5058,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-314',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906905',
     nombre: 'Salome Rendón Molina',
     edad: 4,
@@ -5074,7 +5074,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-315',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906997',
     nombre: 'Joseph López Valencia',
     edad: 2,
@@ -5090,7 +5090,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-316',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906954',
     nombre: 'Miguel Angel Ridriguez Moriano',
     edad: 4,
@@ -5106,7 +5106,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-317',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906645',
     nombre: 'Salomé López Aristizábal',
     edad: 9,
@@ -5122,7 +5122,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-318',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906083',
     nombre: 'Thaliana Granada Idarraga',
     edad: 13,
@@ -5138,7 +5138,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-319',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1113870678',
     nombre: 'Dante Garcia Morales',
     edad: 6,
@@ -5154,7 +5154,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-320',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906810',
     nombre: 'Ariana Ipia Marin',
     edad: 6,
@@ -5170,7 +5170,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-321',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112905153',
     nombre: 'German Andres Hurtado Ceballos',
     edad: 36,
@@ -5186,7 +5186,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-322',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906256',
     nombre: 'Juan Esteban Gómez Bolívar',
     edad: 11,
@@ -5202,7 +5202,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-323',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112905910',
     nombre: 'Mariana Gallego Pareja',
     edad: 14,
@@ -5218,7 +5218,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-324',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906323',
     nombre: 'Diego Gallego Pareja',
     edad: 11,
@@ -5234,7 +5234,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-325',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1036969133',
     nombre: 'Elizabeth Arenas Torres',
     edad: 3,
@@ -5250,7 +5250,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-326',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29463472',
     nombre: 'María Nubia Cardona',
     edad: 40,
@@ -5266,7 +5266,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-327',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906956',
     nombre: 'Salome Molina Garcia',
     edad: 3,
@@ -5282,7 +5282,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-328',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906628',
     nombre: 'Laura Valentina Molina Garcia',
     edad: 9,
@@ -5298,7 +5298,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-329',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '82385319',
     nombre: 'Edwar Ignacio Rivera Valoi',
     edad: 40,
@@ -5314,7 +5314,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-330',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29815570',
     nombre: 'Blanca Aurora Ospina Hoyos',
     edad: 45,
@@ -5330,7 +5330,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-331',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1075257188',
     nombre: 'Jhoan Sebastián Araujo',
     edad: 45,
@@ -5346,7 +5346,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-332',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '71933565',
     nombre: 'Jesús Obed Giraldo Sánchez',
     edad: 50,
@@ -5362,7 +5362,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-333',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29462574',
     nombre: 'Rosa Matilde López',
     edad: 67,
@@ -5378,7 +5378,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-334',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1080295643',
     nombre: 'Darwin Jhoan Araujo Silva',
     edad: 13,
@@ -5394,7 +5394,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-335',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906649',
     nombre: 'Neythan Araujo Silva',
     edad: 5,
@@ -5410,7 +5410,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-336',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1112906888',
     nombre: 'Manuel Rincón Cruz',
     edad: 5,
@@ -5426,7 +5426,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-337',
-    tipoDocumento: 'RC' as Patient['tipoDocumento'],
+    tipoDocumento: 'RC',
     documento: '1112906888',
     nombre: 'Manuel Rincón Cruz',
     edad: 5,
@@ -5442,7 +5442,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-338',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29467280',
     nombre: 'Maria Gladis Arstizabal Escobar',
     edad: 60,
@@ -5458,7 +5458,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-339',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '6243688',
     nombre: 'Jose Neftali Cardona Marulanda',
     edad: 80,
@@ -5474,7 +5474,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-340',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1112931910',
     nombre: 'Angela Maria Galeano Zapata',
     edad: 19,
@@ -5490,7 +5490,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-341',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '10251028',
     nombre: 'Fabio Enrique Ramos Lopez',
     edad: 65,
@@ -5506,7 +5506,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-342',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '1037389669',
     nombre: 'Gladys Arely Taborda Moreno',
     edad: 33,
@@ -5522,7 +5522,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-343',
-    tipoDocumento: 'TI' as Patient['tipoDocumento'],
+    tipoDocumento: 'TI',
     documento: '1114160681',
     nombre: 'Eddy Santiago Ferreiro Taborda',
     edad: 11,
@@ -5538,7 +5538,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-344',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '29464652',
     nombre: 'Nelsy Aristizabal Marín',
     edad: 42,
@@ -5554,7 +5554,7 @@ export const PACIENTES_INICIALES: Patient[] = [
   },
   {
     id: 'pac-345',
-    tipoDocumento: 'CC' as Patient['tipoDocumento'],
+    tipoDocumento: 'CC',
     documento: '2000031597',
     nombre: 'Marín Marín María Seleida',
     edad: 78,
@@ -5569,4 +5569,6 @@ export const PACIENTES_INICIALES: Patient[] = [
     requiereRemision: false
   },
 ];
+
+
 

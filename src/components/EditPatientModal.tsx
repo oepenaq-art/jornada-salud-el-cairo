@@ -24,7 +24,7 @@ interface Props {
 
 export default function EditPatientModal({ patient, onSave, onClose }: Props) {
   const [nombre, setNombre] = useState(cleanMojibake(patient.nombre));
-  const [tipoDocumento, setTipoDocumento] = useState<Patient["tipoDocumento"]>(
+  const [tipoDocumento, setTipoDocumento] = useState<string>(
     patient.tipoDocumento || "CC"
   );
   const [documento, setDocumento] = useState(patient.documento || "");
@@ -121,16 +121,16 @@ export default function EditPatientModal({ patient, onSave, onClose }: Props) {
               </label>
               <select
                 value={tipoDocumento}
-                onChange={(e) =>
-                  setTipoDocumento(e.target.value as Patient["tipoDocumento"])
-                }
+                onChange={(e) => setTipoDocumento(e.target.value)}
                 className="w-full border border-gray-300 rounded-xl px-2.5 py-2.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-pueblo-500 bg-gray-50 focus:bg-white"
               >
                 <option value="CC">CC (Cédula)</option>
                 <option value="TI">TI (Tarjeta)</option>
                 <option value="RC">RC (Registro)</option>
                 <option value="CE">CE (Extranjería)</option>
-                <option value="PT">PT (Permiso)</option>
+                <option value="PPT">PPT (Permiso Protección)</option>
+                <option value="PT">PT (Permiso Temporal)</option>
+                <option value="NV">NV (Nacido Vivo)</option>
               </select>
             </div>
 

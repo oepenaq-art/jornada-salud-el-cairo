@@ -12,10 +12,10 @@ export interface StructuredMedicalNote {
 export interface Patient {
   id: string;
   documento: string;
-  tipoDocumento: "CC" | "TI" | "RC" | "CE" | "PT";
+  tipoDocumento: string;
   nombre: string;
   edad: number;
-  sexo: "F" | "M" | "Otro";
+  sexo: string;
   telefono?: string;
   veredaBarrio?: string;
   especialidad: string;
