@@ -36,6 +36,7 @@ export function cleanMojibake(str?: string | null): string {
     .replace(/Pati[ñ|n|Ã±|├▒|]+o/gi, "Patiño")
     .replace(/Jos[é|e|Ã©|├⌐|]+/gi, "José")
     .replace(/Mar[í|i|Ã­|├¡|]+a/gi, "María")
+    .replace(/Pr\s*ctica/gi, "Práctica")
     .replace(/Ã¡/g, "á")
     .replace(/Ã©/g, "é")
     .replace(/Ã­/g, "í")

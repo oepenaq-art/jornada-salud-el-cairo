@@ -10,7 +10,7 @@ import {
   CheckSquare,
   Square,
   Stethoscope,
-  Download,
+  FileDown,
   Loader2,
   CheckCircle2,
 } from "lucide-react";
@@ -29,7 +29,7 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
     window.print();
   };
 
-  // Carga dinámica de html2canvas con fallback a CDN para máxima compatibilidad
+  // Carga dinámica de html2canvas con fallback a CDN
   const getHtml2Canvas = async () => {
     try {
       // @ts-ignore
@@ -48,6 +48,28 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
       }
       // @ts-ignore
       return (window as any).html2canvas;
+    }
+  };
+
+  // Carga dinámica de jsPDF con fallback a CDN
+  const getJsPdf = async () => {
+    try {
+      // @ts-ignore
+      const mod = await import("jspdf");
+      return mod.jsPDF || mod.default || mod;
+    } catch {
+      if (typeof window !== "undefined" && !(window as any).jspdf) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+      // @ts-ignore
+      return (window as any).jspdf?.jsPDF || (window as any).jsPDF;
     }
   };
 
@@ -73,14 +95,14 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
     return `*FUNDACIÓN TEJAS PARA MI PUEBLO*
 *Jornada de Salud • El Cairo, Valle del Cauca*
 ━━━━━━━━━━━━━━━━━━━━━━━━━
-📄 *ORDEN MÉDICA Y RESUMEN CLÍNICO OFICIAL*
+📄 *ORDEN MÉDICA Y RESUMEN CLÍNICO (PDF OFICIAL)*
 *Paciente:* ${cleanMojibake(patient.nombre)}
 *Identificación:* ${patient.tipoDocumento || "CC"} ${patient.documento || "Sin número"} (${patient.edad} años)
 *Especialidad:* ${getCanonicalSpecialty(patient.especialidad)}
 *Procedencia:* ${cleanMojibake(patient.veredaBarrio || "El Cairo")}
 *Conducta Requerida:* ${flags || "Valoración realizada"}
 ${patient.detalleDestino ? `*Detalle / Destino:* ${patient.detalleDestino}\n` : ""}
-🔗 *Ver Documento Oficial con Logo y Firma en línea:*
+🔗 *Ver y Descargar Documento Oficial en PDF con Logo y Firma:*
 ${docLink}
 ━━━━━━━━━━━━━━━━━━━━━━━━━
 *1. ENFERMEDAD ACTUAL:*
@@ -100,17 +122,19 @@ ${note?.planYJustificacion || "Sin información relevante"}
 ━━━━━━━━━━━━━━━━━━━━━━━━━
 *Profesional Tratante:* ${patient.medicoAtendio || "Profesional de la Jornada"}
 *Fecha de Atención:* ${patient.fechaAtencion || new Date().toLocaleString("es-CO")}
-${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y sello listo para guardar.*" : ""}`;
+${fileDownloaded ? "\n📎 *Se ha generado el documento oficial en formato PDF listo para descargar o consultar.*" : ""}`;
   };
 
-  // Generar imagen de alta resolución del documento oficial
-  const generateDocumentBlob = async (): Promise<Blob | null> => {
+  // Generador de archivo PDF real (application/pdf)
+  const generatePdfBlob = async (): Promise<{ blob: Blob; fileName: string } | null> => {
     const element = document.getElementById("printable-document-content");
     if (!element) return null;
 
     const html2canvas = await getHtml2Canvas();
-    if (!html2canvas) return null;
+    const JsPDFClass = await getJsPdf();
+    if (!html2canvas || !JsPDFClass) return null;
 
+    // Capturar en canvas con escala 2x para nitidez de impresión
     const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
@@ -119,65 +143,94 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
       windowWidth: element.scrollWidth,
     });
 
-    return new Promise((resolve) => {
-      canvas.toBlob((b: Blob | null) => resolve(b), "image/png", 0.95);
+    const imgData = canvas.toDataURL("image/jpeg", 0.95);
+    const pdf = new JsPDFClass({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
     });
+
+    const pageWidth = pdf.internal.pageSize.getWidth(); // 210 mm
+    const pageHeight = pdf.internal.pageSize.getHeight(); // 297 mm
+    const margin = 8; // 8 mm margen
+    const contentWidth = pageWidth - margin * 2;
+    const contentHeight = (canvas.height * contentWidth) / canvas.width;
+
+    if (contentHeight <= pageHeight - margin * 2) {
+      pdf.addImage(imgData, "JPEG", margin, margin, contentWidth, contentHeight);
+    } else {
+      // Si la nota clínica es muy extensa, paginar adecuadamente
+      let heightLeft = contentHeight;
+      let position = margin;
+
+      pdf.addImage(imgData, "JPEG", margin, position, contentWidth, contentHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft > 0) {
+        position = heightLeft - contentHeight + margin;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", margin, position, contentWidth, contentHeight);
+        heightLeft -= pageHeight;
+      }
+    }
+
+    const cleanName = cleanMojibake(patient.nombre).replace(/[^a-zA-Z0-9]/g, "_");
+    const fileName = `Orden_Medica_${cleanName}_TejasParaMiPueblo.pdf`;
+    const pdfBlob = pdf.output("blob");
+
+    return { blob: pdfBlob, fileName };
   };
 
-  // Descarga directa del documento como archivo de imagen
-  const handleDownloadDocument = async () => {
+  // Descarga directa del documento como archivo PDF auténtico (.pdf)
+  const handleDownloadPdf = async () => {
     setIsGeneratingDoc(true);
     try {
-      const blob = await generateDocumentBlob();
-      if (!blob) {
-        alert("No fue posible generar el documento. Usa el botón de Imprimir / PDF.");
+      const res = await generatePdfBlob();
+      if (!res) {
+        window.print();
         return;
       }
-      const cleanName = patient.nombre.replace(/[^a-zA-Z0-9]/g, "_");
-      const fileName = `Orden_Medica_${cleanName}_TejasParaMiPueblo.png`;
-      const url = URL.createObjectURL(blob);
+      const url = URL.createObjectURL(res.blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = fileName;
+      a.download = res.fileName;
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 2000);
       setGeneratedSuccess(true);
       setTimeout(() => setGeneratedSuccess(false), 3000);
     } catch (err) {
-      console.error("Error descargando documento:", err);
+      console.error("Error descargando PDF:", err);
       window.print();
     } finally {
       setIsGeneratingDoc(false);
     }
   };
 
-  // Compartir por WhatsApp creando y adjuntando el documento
+  // Compartir por WhatsApp creando y adjuntando el documento PDF
   const handleShareWhatsApp = async () => {
     setIsGeneratingDoc(true);
     try {
-      const blob = await generateDocumentBlob();
-      const cleanName = patient.nombre.replace(/[^a-zA-Z0-9]/g, "_");
-      const fileName = `Orden_Medica_${cleanName}_TejasParaMiPueblo.png`;
+      const res = await generatePdfBlob();
 
-      // 1. Si estamos en celular (Android / iOS) con soporte para compartir archivos directamente
+      // 1. Si estamos en celular (Android / iOS) con soporte para compartir archivos PDF directamente
       if (
-        blob &&
+        res &&
         typeof navigator !== "undefined" &&
         navigator.share &&
         navigator.canShare
       ) {
-        const file = new File([blob], fileName, { type: "image/png" });
+        const file = new File([res.blob], res.fileName, { type: "application/pdf" });
         if (navigator.canShare({ files: [file] })) {
           try {
             await navigator.share({
               files: [file],
-              title: `Orden Médica Oficial - ${cleanMojibake(patient.nombre)}`,
+              title: `Orden Médica Oficial (PDF) - ${cleanMojibake(patient.nombre)}`,
               text: getWhatsAppMessageText(true),
             });
             setIsGeneratingDoc(false);
             return;
-          } catch (e) {
-            // Si el usuario canceló el selector nativo, no hacemos nada más
+          } catch {
+            // Si el usuario canceló el selector nativo
             setIsGeneratingDoc(false);
             return;
           }
@@ -185,12 +238,12 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
       }
 
       // 2. Si no soporta compartir archivo directo (ej. navegador de escritorio):
-      // Descargamos el documento para que el usuario lo tenga listo y abrimos WhatsApp con el enlace oficial
-      if (blob) {
-        const url = URL.createObjectURL(blob);
+      // Descargamos el archivo .pdf y abrimos WhatsApp con el mensaje estructurado y link directo
+      if (res) {
+        const url = URL.createObjectURL(res.blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = fileName;
+        a.download = res.fileName;
         a.click();
         setTimeout(() => URL.revokeObjectURL(url), 2000);
       }
@@ -220,7 +273,7 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
         <div className="bg-pueblo-900 text-white px-3 sm:px-4 py-3 flex items-center justify-between print:hidden">
           <div className="flex items-center gap-2 min-w-0">
             <span className="bg-teja-600 text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shrink-0">
-              Documento Oficial
+              PDF Oficial
             </span>
             <span className="font-bold text-xs sm:text-sm truncate">
               {cleanMojibake(patient.nombre)}
@@ -228,28 +281,28 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* Botón Descargar Documento (Imagen PNG Oficial) */}
+            {/* Botón Descargar PDF Oficial (.pdf) */}
             <button
-              onClick={handleDownloadDocument}
+              onClick={handleDownloadPdf}
               disabled={isGeneratingDoc}
-              className="flex items-center gap-1 bg-white/15 hover:bg-white/25 text-white text-xs font-bold px-2.5 py-1.5 rounded-xl transition active:scale-95"
-              title="Descargar documento con membrete y logo como imagen"
+              className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-black px-3 py-1.5 rounded-xl transition shadow-sm active:scale-95 disabled:opacity-75"
+              title="Descargar documento oficial en formato PDF (.pdf)"
             >
-              <Download className="w-4 h-4 text-amber-300" />
-              <span className="hidden sm:inline">Descargar</span>
+              <FileDown className="w-4 h-4 text-white" />
+              <span>Descargar PDF</span>
             </button>
 
-            {/* Botón WhatsApp (Genera el documento oficial y lo adjunta) */}
+            {/* Botón WhatsApp (Genera el PDF y lo envía) */}
             <button
               onClick={handleShareWhatsApp}
               disabled={isGeneratingDoc}
-              className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-sm active:scale-95 disabled:opacity-75"
-              title="Crear documento y enviar por WhatsApp"
+              className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-sm active:scale-95 disabled:opacity-75"
+              title="Crear documento PDF y enviar por WhatsApp"
             >
               {isGeneratingDoc ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Creando...</span>
+                  <span>Creando PDF...</span>
                 </>
               ) : (
                 <>
@@ -259,14 +312,14 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
               )}
             </button>
 
-            {/* Botón Imprimir / PDF */}
+            {/* Botón Imprimir */}
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1 bg-teja-600 hover:bg-teja-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-sm active:scale-95"
-              title="Imprimir documento oficial en 1 página o Guardar como PDF"
+              className="flex items-center gap-1 bg-teja-600 hover:bg-teja-700 text-white text-xs font-bold px-2.5 py-1.5 rounded-xl transition shadow-sm active:scale-95"
+              title="Imprimir documento oficial en 1 página"
             >
               <Printer className="w-4 h-4" />
-              <span className="hidden sm:inline">Imprimir / PDF</span>
+              <span className="hidden sm:inline">Imprimir</span>
             </button>
 
             <button
@@ -279,12 +332,12 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
           </div>
         </div>
 
-        {/* Mensaje de confirmación de descarga */}
+        {/* Mensaje de confirmación de descarga de PDF */}
         {generatedSuccess && (
           <div className="bg-emerald-100 border-b border-emerald-300 text-emerald-900 px-4 py-1.5 text-xs font-bold flex items-center justify-between print:hidden">
             <span className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-              Documento oficial generado y guardado en tu dispositivo.
+              Documento PDF oficial descargado exitosamente.
             </span>
           </div>
         )}
@@ -447,7 +500,7 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
                 1. Enfermedad Actual y Motivo de Consulta
               </h3>
               <p className="text-gray-800 mt-0.5 whitespace-pre-line font-medium">
-                {note?.enfermedadActual || "Sin registro especificado."}
+                {note?.enfermedadActual || "Sin información relevante."}
               </p>
             </div>
 
@@ -474,7 +527,7 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
                 4. Impresión Diagnóstica
               </h3>
               <p className="text-gray-900 font-bold mt-0.5 whitespace-pre-line">
-                {note?.impresionDiagnostica || "Diagnóstico clínico en valoración."}
+                {note?.impresionDiagnostica || "Sin información relevante."}
               </p>
             </div>
 
@@ -483,7 +536,7 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
                 5. Plan de Manejo, Tratamiento y Justificación Clínica
               </h3>
               <p className="text-gray-900 mt-0.5 whitespace-pre-line font-medium">
-                {note?.planYJustificacion || "Indicaciones y plan formulados por el profesional."}
+                {note?.planYJustificacion || "Sin información relevante."}
               </p>
             </div>
           </div>
