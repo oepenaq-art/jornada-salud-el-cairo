@@ -8,16 +8,17 @@ REGLAS ESTRICTAS:
 1. ELIMINAR RUIDO Y REDUNDANCIAS: Elimina muletillas ("eh", "este", "bueno", "digamos", "entonces"), silencios, ruidos de fondo y repeticiones.
 2. AUTOCORRECCIÓN CLÍNICA: Si el médico se corrige durante el audio (ej. "presión de 130/80, perdón 150/95"), conserva únicamente el dato corregido final.
 3. TERMINOLOGÍA MÉDICA: Corrige errores fonéticos en nombres de medicamentos (DCI/genéricos en Colombia), signos clínicos, hallazgos semiológicos y paraclínicos.
-4. FIDELIDAD CLÍNICA: No inventes signos vitales ni hallazgos que el médico no haya mencionado. Si algún apartado no fue detallado, redacta "No referido en el dictado" o sintetiza con precisión lo reportado.
+4. FIDELIDAD CLÍNICA Y APARTADOS NO MENCIONADOS: No inventes signos vitales ni hallazgos que el médico no haya mencionado. Si algún apartado (como 'examenFisico', 'antecedentes', etc.) NO fue mencionado por el médico en el dictado o no contiene datos relevantes, debes redactar EXACTAMENTE: "Sin información relevante". NUNCA inventes frases genéricas como "paciente alerta y orientado" ni copies fragmentos de la enfermedad actual en el examen físico.
 5. JUSTIFICACIÓN DE CONDUCTA: En el apartado de "planYJustificacion", deja muy clara la justificación clínica de por qué el paciente requiere los exámenes solicitados, la remisión a especialista o el seguimiento prioritario, para facilitar la autorización ante su EPS o red de apoyo de la Fundación.
+6. COMPLEMENTACIÓN: Si se proporciona una nota clínica previa ("existingNote"), integra la nueva información sumándola a los campos correspondientes sin descartar los datos clínicos previos válidos.
 
 Debes responder ÚNICAMENTE con un objeto JSON válido con la siguiente estructura exacta (sin bloques markdown adicionales ni texto previo o posterior):
 {
   "enfermedadActual": "Redacción técnica y cronológica del cuadro clínico actual, síntomas principales y evolución.",
-  "antecedentes": "Antecedentes patológicos, farmacológicos (con dosis si se mencionan), quirúrgicos, alérgicos, tóxicos o familiares relevantes.",
-  "examenFisico": "Signos vitales mencionados y hallazgos positivos y negativos relevantes al examen físico segmentario.",
+  "antecedentes": "Antecedentes patológicos, farmacológicos, quirúrgicos, alérgicos o 'Sin información relevante' si no se mencionaron.",
+  "examenFisico": "Signos vitales y hallazgos físicos mencionados, o 'Sin información relevante' si no se mencionaron hallazgos físicos.",
   "impresionDiagnostica": "Diagnóstico(s) clínico(s) principal y secundarios con código CIE-10 sugerido entre paréntesis.",
-  "planYJustificacion": "Conducta instaurada, listado de exámenes solicitados y/o especialidad a la que se remite, redactando una sólida justificación clínica del motivo de remisión o estudio.",
+  "planYJustificacion": "Conducta instaurada, listado de exámenes solicitados y/o especialidad a la que se remite, con sólida justificación clínica.",
   "resumenEjecutivo": "Resumen ejecutivo de máximo 180 caracteres para la tabla consolidada de seguimiento de la Fundación."
 }`;
 
@@ -81,6 +82,8 @@ export async function POST(req: NextRequest) {
       triageFlags,
       customApiKey,
       dictationText,
+      existingNote,
+      isComplementary,
     } = body;
 
     const apiKey = process.env.GEMINI_API_KEY || customApiKey;
@@ -96,7 +99,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const contextHeader = `
+    let contextHeader = `
 DATOS DEL PACIENTE EN ATENCIÓN:
 - Nombre: ${patientInfo?.nombre || "Paciente"}
 - Edad / Sexo: ${patientInfo?.edad || ""} años (${patientInfo?.sexo || ""})
@@ -108,6 +111,20 @@ DATOS DEL PACIENTE EN ATENCIÓN:
   * Requiere Remisión: ${triageFlags?.requiereRemision ? "SÍ" : "NO"}
   * Destino / Exámenes anotados: ${triageFlags?.detalleDestino || "Según dictado de voz"}
 `;
+
+    if (isComplementary && existingNote) {
+      contextHeader += `
+ANÁLISIS CLÍNICO PREVIO QUE DEBES COMPLEMENTAR O ACTUALIZAR:
+- 1. Enfermedad Actual previa: ${existingNote.enfermedadActual || "Sin información relevante"}
+- 2. Antecedentes previos: ${existingNote.antecedentes || "Sin información relevante"}
+- 3. Examen Físico previo: ${existingNote.examenFisico || "Sin información relevante"}
+- 4. Impresión Diagnóstica previa: ${existingNote.impresionDiagnostica || "Sin información relevante"}
+- 5. Plan y Justificación previo: ${existingNote.planYJustificacion || "Sin información relevante"}
+
+INSTRUCCIÓN DE INTEGRACIÓN:
+El médico acaba de dictar información adicional que olvidó o desea sumar a la historia. Integra esta nueva información en los campos correspondientes (por ejemplo, si menciona hallazgos del examen físico, agrégalos a esa sección) conservando los datos clínicos ya registrados. Si algún campo sigue sin ser mencionado en lo absoluto, coloca "Sin información relevante".
+`;
+    }
 
     const parts: Array<Record<string, unknown>> = [
       {
@@ -189,6 +206,14 @@ DATOS DEL PACIENTE EN ATENCIÓN:
             structured = JSON.parse(jsonMatch[0]);
           } else {
             structured = JSON.parse(cleaned);
+          }
+
+          // Garantizar que campos vacíos o 'no referido' digan exactamente 'Sin información relevante'
+          if (!structured.examenFisico || structured.examenFisico.toLowerCase().includes("no referido")) {
+            structured.examenFisico = "Sin información relevante";
+          }
+          if (!structured.antecedentes || structured.antecedentes.toLowerCase().includes("no referido")) {
+            structured.antecedentes = "Sin información relevante";
           }
 
           return NextResponse.json({

@@ -231,21 +231,17 @@ export default function PatientAttentionModal({
     return {
       enfermedadActual:
         clean ||
-        `Paciente de ${patient.edad} años valorado en jornada de salud en El Cairo por cuadro de ${patient.motivoInicial || "consulta médica"}.`,
-      antecedentes:
-        "Referidos durante el dictado clínico. Sin alergias medicamentosas conocidas reportadas adicionalmente.",
-      examenFisico:
-        "Paciente alerta, orientado, hidratado, signos vitales estables evaluados en consultorio de brigada.",
-      impresionDiagnostica: `Diagnóstico clínico asociado a: ${
-        patient.motivoInicial || "Valoración por " + patient.especialidad
-      }`,
+        `Paciente de ${patient.edad} años valorado en jornada de salud en El Cairo.`,
+      antecedentes: "Sin información relevante",
+      examenFisico: "Sin información relevante",
+      impresionDiagnostica: `Diagnóstico clínico en valoración (${patient.especialidad})`,
       planYJustificacion: `${
         requiereRemision ? "Se solicita remisión prioritaria. " : ""
       }${
         requiereExamenes ? "Se solicitan exámenes paraclínicos de extensión. " : ""
       }${
         requiereSeguimiento ? "Se indica control y seguimiento médico. " : ""
-      }${detalleDestino ? "Detalle específico: " + detalleDestino + "." : ""}`,
+      }${detalleDestino ? "Detalle específico: " + detalleDestino + "." : ""}`.trim() || "Conducta e indicaciones según valoración clínica.",
       resumenEjecutivo: `${patient.motivoInicial || "Atención en jornada"} - ${
         detalleDestino || "Evaluado por " + patient.especialidad
       }`.slice(0, 175),
@@ -312,6 +308,12 @@ export default function PatientAttentionModal({
         base64Audio = await blobToBase64(audioBlob);
       }
 
+      const hasExistingContent = Boolean(
+        note.enfermedadActual.trim() ||
+        note.planYJustificacion.trim() ||
+        note.impresionDiagnostica.trim()
+      );
+
       const response = await fetch("/api/analyze-audio", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -319,6 +321,8 @@ export default function PatientAttentionModal({
           audioBase64: base64Audio,
           mimeType: audioMimeType,
           dictationText: rawDictationText.trim() || undefined,
+          existingNote: hasExistingContent ? note : undefined,
+          isComplementary: hasExistingContent,
           customApiKey,
           patientInfo: {
             nombre: patient.nombre,
@@ -359,14 +363,16 @@ export default function PatientAttentionModal({
       if (data?.structured) {
         setNote({
           enfermedadActual: data.structured.enfermedadActual || "",
-          antecedentes: data.structured.antecedentes || "",
-          examenFisico: data.structured.examenFisico || "",
+          antecedentes: data.structured.antecedentes || "Sin información relevante",
+          examenFisico: data.structured.examenFisico || "Sin información relevante",
           impresionDiagnostica: data.structured.impresionDiagnostica || "",
           planYJustificacion: data.structured.planYJustificacion || "",
           resumenEjecutivo: data.structured.resumenEjecutivo || "",
         });
         setAiSuccessMsg(
-          "¡Análisis estructurado con éxito! Revisa o edita cualquier campo antes de guardar."
+          hasExistingContent
+            ? "¡Información complementaria integrada con éxito al análisis previo! Puedes revisar o ajustar cualquier dato."
+            : "¡Análisis estructurado con éxito! Revisa o edita cualquier campo antes de guardar."
         );
       }
     } catch (err) {
@@ -737,18 +743,29 @@ export default function PatientAttentionModal({
           {/* Zona táctil de Grabación */}
           <div className="flex flex-col items-center justify-center py-2">
             {!isRecording ? (
-              <button
-                type="button"
-                onClick={startRecording}
-                className="w-full py-4 bg-gradient-to-r from-teja-600 to-teja-500 hover:from-teja-700 hover:to-teja-600 active:scale-[0.99] text-white rounded-2xl shadow-lg flex items-center justify-center gap-3 font-extrabold text-base transition"
-              >
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                  <Mic className="w-6 h-6" />
-                </div>
-                <span>
-                  {audioBlob ? "Grabar Nuevo Audio" : "Presionar para Grabar Audio"}
-                </span>
-              </button>
+              <div className="w-full space-y-2">
+                <button
+                  type="button"
+                  onClick={startRecording}
+                  className="w-full py-4 bg-gradient-to-r from-teja-600 to-teja-500 hover:from-teja-700 hover:to-teja-600 active:scale-[0.99] text-white rounded-2xl shadow-lg flex items-center justify-center gap-3 font-extrabold text-base transition"
+                >
+                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                    <Mic className="w-6 h-6" />
+                  </div>
+                  <span>
+                    {Boolean(note.enfermedadActual.trim() || note.planYJustificacion.trim())
+                      ? "🎙️ Grabar Audio Complementario (Sumar a esta nota)"
+                      : audioBlob
+                      ? "Grabar Nuevo Audio"
+                      : "Presionar para Grabar Audio"}
+                  </span>
+                </button>
+                {Boolean(note.enfermedadActual.trim() || note.planYJustificacion.trim()) && (
+                  <p className="text-[11px] text-pueblo-800 text-center font-medium bg-pueblo-50 py-1.5 px-3 rounded-xl border border-pueblo-200">
+                    💡 Si olvidaste mencionar el examen físico o cualquier detalle, puedes grabarlo aquí y la IA lo <strong>sumará al análisis actual</strong> sin borrar lo anterior.
+                  </p>
+                )}
+              </div>
             ) : (
               <div className="w-full bg-red-50 border-2 border-red-500 rounded-2xl p-4 flex flex-col items-center gap-3">
                 <div className="flex items-center gap-2 text-red-600 font-extrabold text-lg">
@@ -868,9 +885,19 @@ export default function PatientAttentionModal({
               <FileText className="w-4 h-4 text-teja-600" />
               3. Estructura de Análisis Médico (Editable)
             </h3>
-            <span className="text-[11px] text-gray-400">
-              Puedes editar cualquier texto
+            <span className="text-[11px] text-emerald-700 font-extrabold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              ✏️ 100% Editable
             </span>
+          </div>
+
+          <div className="bg-blue-50/80 border border-blue-200 rounded-xl p-3 text-xs text-blue-950 flex items-start gap-2.5 shadow-sm">
+            <Pencil className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+            <div className="text-[11px] leading-relaxed">
+              <strong>¿Olvidaste algún dato o quieres añadir información antes del PDF?</strong>
+              <p className="mt-0.5 text-blue-900">
+                Puedes tocar directamente cualquiera de las 5 casillas de abajo para escribir o usar el micrófono del teclado de tu teléfono. O si prefieres, pulsa arriba <strong>&quot;🎙️ Grabar Audio Complementario&quot;</strong> y la IA sumará lo nuevo sin borrar lo anterior.
+              </p>
+            </div>
           </div>
 
           <div>

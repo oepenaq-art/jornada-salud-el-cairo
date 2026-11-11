@@ -84,19 +84,19 @@ ${patient.detalleDestino ? `*Detalle / Destino:* ${patient.detalleDestino}\n` : 
 ${docLink}
 ━━━━━━━━━━━━━━━━━━━━━━━━━
 *1. ENFERMEDAD ACTUAL:*
-${note?.enfermedadActual || "N/A"}
+${note?.enfermedadActual || "Sin información relevante"}
 
 *2. ANTECEDENTES:*
-${note?.antecedentes || "N/A"}
+${note?.antecedentes?.trim() || "Sin información relevante"}
 
 *3. EXAMEN FÍSICO:*
-${note?.examenFisico || "N/A"}
+${note?.examenFisico?.trim() || "Sin información relevante"}
 
 *4. IMPRESIÓN DIAGNÓSTICA:*
-${note?.impresionDiagnostica || "N/A"}
+${note?.impresionDiagnostica || "Sin información relevante"}
 
 *5. PLAN Y JUSTIFICACIÓN:*
-${note?.planYJustificacion || "N/A"}
+${note?.planYJustificacion || "Sin información relevante"}
 ━━━━━━━━━━━━━━━━━━━━━━━━━
 *Profesional Tratante:* ${patient.medicoAtendio || "Profesional de la Jornada"}
 *Fecha de Atención:* ${patient.fechaAtencion || new Date().toLocaleString("es-CO")}
@@ -456,7 +456,7 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
                 2. Antecedentes Relevantes (Patológicos, Farmacológicos, Quirúrgicos, Alérgicos)
               </h3>
               <p className="text-gray-800 mt-0.5 whitespace-pre-line font-medium">
-                {note?.antecedentes || "Sin antecedentes patológicos reportados."}
+                {note?.antecedentes?.trim() ? note.antecedentes : "Sin información relevante."}
               </p>
             </div>
 
@@ -465,7 +465,7 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y s
                 3. Hallazgos al Examen Físico y Signos Vitales
               </h3>
               <p className="text-gray-800 mt-0.5 whitespace-pre-line font-medium">
-                {note?.examenFisico || "Evaluación física realizada en consultorio de brigada."}
+                {note?.examenFisico?.trim() ? note.examenFisico : "Sin información relevante."}
               </p>
             </div>
 
