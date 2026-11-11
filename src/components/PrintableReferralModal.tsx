@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Patient } from "../types/medical";
+import { cleanMojibake, getCanonicalSpecialty } from "../lib/normalize";
 import { Printer, Share2, X, CheckSquare, Square } from "lucide-react";
 
 interface Props {
@@ -119,24 +120,18 @@ ${note?.planYJustificacion || "N/A"}
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
             <div>
               <span className="text-gray-500 block">Paciente:</span>
-              <span className="font-bold text-gray-900 text-sm">{patient.nombre}</span>
+              <span className="font-bold text-gray-900 text-sm">{cleanMojibake(patient.nombre)}</span>
             </div>
             <div>
               <span className="text-gray-500 block">Identificación:</span>
               <span className="font-bold text-gray-900">
-                {patient.tipoDocumento} {patient.documento}
+                {patient.tipoDocumento || "CC"} {patient.documento || "Sin número"}
               </span>
             </div>
             <div>
               <span className="text-gray-500 block">Edad / Sexo:</span>
               <span className="font-bold text-gray-900">
-                {patient.edad} años ({patient.sexo})
-              </span>
-            </div>
-            <div>
-              <span className="text-gray-500 block">Vereda / Barrio:</span>
-              <span className="font-semibold text-gray-800">
-                {patient.veredaBarrio || "El Cairo"}
+                {patient.edad} años
               </span>
             </div>
             <div>
@@ -147,6 +142,16 @@ ${note?.planYJustificacion || "N/A"}
             </div>
             <div>
               <span className="text-gray-500 block">Especialidad:</span>
+              <span className="font-semibold text-pueblo-700">
+                {getCanonicalSpecialty(patient.especialidad)}
+              </span>
+            </div>
+            <div>
+              <span className="text-gray-500 block">Vereda / Municipio:</span>
+              <span className="font-semibold text-gray-800">
+                {cleanMojibake(patient.veredaBarrio || "El Cairo, Valle")}
+              </span>
+            </div>
               <span className="font-bold text-pueblo-700">{patient.especialidad}</span>
             </div>
           </div>

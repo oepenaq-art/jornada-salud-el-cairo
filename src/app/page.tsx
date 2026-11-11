@@ -27,6 +27,7 @@ import {
   syncPatientToCloud,
 } from "../lib/firebaseSync";
 import { exportJornadaToExcel } from "../lib/excelUtils";
+import { cleanMojibake, getCanonicalSpecialty, normalizeText } from "../lib/normalize";
 import PatientAttentionModal from "../components/PatientAttentionModal";
 import PrintableReferralModal from "../components/PrintableReferralModal";
 import CoordinatorModal from "../components/CoordinatorModal";
@@ -48,6 +49,8 @@ import {
   FlaskConical,
   Ambulance,
   ChevronRight,
+  ListFilter,
+  Users,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -91,11 +94,17 @@ export default function HomePage() {
     if (savedEsp) setSelectedSpecialty(savedEsp);
 
     // Cargar desde IndexedDB
-    loadPatients().then((loaded) => setPatients(loaded));
+    loadPatients().then((loaded) => {
+      if (loaded && loaded.length > 0) {
+        setPatients(loaded);
+      }
+    });
     loadDoctors().then((loadedDocs) => {
-      setDoctors(loadedDocs);
-      if (!savedDoc && loadedDocs.length > 0) {
-        setActiveDoctor(loadedDocs[0].nombre);
+      if (loadedDocs && loadedDocs.length > 0) {
+        setDoctors(loadedDocs);
+        if (!savedDoc) {
+          setActiveDoctor(loadedDocs[0].nombre);
+        }
       }
     });
     getOfflineAudioQueue().then((q) => setOfflineQueue(q));
@@ -108,10 +117,12 @@ export default function HomePage() {
       })
       .catch(() => {});
 
-    // Suscribirse a Firebase Firestore si está configurado
+    // Suscribirse a Firebase Firestore
     const unsub = subscribeToCloudPatients((cloudPatients) => {
-      setPatients(cloudPatients);
-      saveAllPatients(cloudPatients, false);
+      if (cloudPatients && cloudPatients.length > 0) {
+        setPatients(cloudPatients);
+        saveAllPatients(cloudPatients, false);
+      }
     });
 
     return () => {
@@ -121,60 +132,38 @@ export default function HomePage() {
     };
   }, []);
 
-  // Lista dinámica de especialidades disponibles
+  // Lista dinámica de especialidades disponibles con tildes canónicas unificadas
   const allSpecialties = useMemo(() => {
-    const set = new Set<string>(ESPECIALIDADES_JORNADA);
+    const map = new Map<string, string>();
+    ESPECIALIDADES_JORNADA.forEach((e) => {
+      map.set(normalizeText(e), getCanonicalSpecialty(e));
+    });
     patients.forEach((p) => {
-      if (p.especialidad) set.add(p.especialidad);
+      if (p.especialidad) {
+        p.especialidad.split(",").forEach((item) => {
+          const t = item.trim();
+          if (t) {
+            map.set(normalizeText(t), getCanonicalSpecialty(t));
+          }
+        });
+      }
     });
     doctors.forEach((d) => {
-      if (d.especialidad) set.add(d.especialidad);
+      if (d.especialidad) {
+        map.set(normalizeText(d.especialidad), getCanonicalSpecialty(d.especialidad));
+      }
     });
-    return Array.from(set);
+    return Array.from(map.values());
   }, [patients, doctors]);
-
-  // Filtrar pacientes según especialidad, pestaña y búsqueda
-  const filteredPatients = useMemo(() => {
-    return patients.filter((p) => {
-      if (
-        selectedSpecialty !== "Todas" &&
-        p.especialidad.toLowerCase() !== selectedSpecialty.toLowerCase()
-      ) {
-        return false;
-      }
-
-      if (statusTab === "pendientes" && p.estado === "atendido") {
-        return false;
-      }
-      if (
-        statusTab === "requieren" &&
-        !p.requiereSeguimiento &&
-        !p.requiereExamenes &&
-        !p.requiereRemision
-      ) {
-        return false;
-      }
-
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matchName = p.nombre.toLowerCase().includes(q);
-        const matchDoc = p.documento.toLowerCase().includes(q);
-        const matchVereda = (p.veredaBarrio || "").toLowerCase().includes(q);
-        return matchName || matchDoc || matchVereda;
-      }
-
-      return true;
-    });
-  }, [patients, selectedSpecialty, statusTab, searchQuery]);
 
   // Contadores para las pestañas de la especialidad seleccionada
   const specialtyCounts = useMemo(() => {
+    const normSelected = normalizeText(selectedSpecialty);
     const base =
       selectedSpecialty === "Todas"
         ? patients
-        : patients.filter(
-            (p) =>
-              p.especialidad.toLowerCase() === selectedSpecialty.toLowerCase()
+        : patients.filter((p) =>
+            normalizeText(p.especialidad).includes(normSelected)
           );
     return {
       total: base.length,
@@ -187,16 +176,78 @@ export default function HomePage() {
     };
   }, [patients, selectedSpecialty]);
 
+  // Filtrar pacientes según especialidad, pestaña y búsqueda (soporta especialidades compuestas y búsqueda global por documento)
+  const { filteredPatients, isShowingGlobalFallback, totalGlobalMatches } = useMemo(() => {
+    const normSelected = normalizeText(selectedSpecialty);
+    const normQuery = normalizeText(searchQuery);
+
+    const matchesQuery = (p: Patient) => {
+      if (!normQuery) return true;
+      const matchName = normalizeText(p.nombre).includes(normQuery);
+      const matchDoc = normalizeText(p.documento).includes(normQuery);
+      const matchTel = normalizeText(p.telefono).includes(normQuery);
+      const matchEsp = normalizeText(p.especialidad).includes(normQuery);
+      return matchName || matchDoc || matchTel || matchEsp;
+    };
+
+    const matchesStatus = (p: Patient) => {
+      if (statusTab === "pendientes" && p.estado === "atendido") return false;
+      if (
+        statusTab === "requieren" &&
+        !p.requiereSeguimiento &&
+        !p.requiereExamenes &&
+        !p.requiereRemision
+      ) {
+        return false;
+      }
+      return true;
+    };
+
+    // 1. Filtrar dentro de la especialidad seleccionada
+    let list = patients.filter((p) => {
+      if (selectedSpecialty !== "Todas") {
+        if (!normalizeText(p.especialidad).includes(normSelected)) {
+          return false;
+        }
+      }
+      return matchesStatus(p) && matchesQuery(p);
+    });
+
+    let isFallback = false;
+    let globalCount = 0;
+
+    // 2. Si no hubo resultados con la búsqueda (por ejemplo por número de cédula),
+    // buscar automáticamente en la lista COMPLETA de todos los pacientes
+    if (list.length === 0 && normQuery && selectedSpecialty !== "Todas") {
+      const globalMatches = patients.filter(
+        (p) => matchesStatus(p) && matchesQuery(p)
+      );
+      if (globalMatches.length > 0) {
+        list = globalMatches;
+        isFallback = true;
+        globalCount = globalMatches.length;
+      }
+    }
+
+    return {
+      filteredPatients: list,
+      isShowingGlobalFallback: isFallback,
+      totalGlobalMatches: globalCount,
+    };
+  }, [patients, selectedSpecialty, statusTab, searchQuery]);
+
   const handleSelectSpecialty = (esp: string) => {
     setSelectedSpecialty(esp);
     localStorage.setItem("tejas_active_specialty", esp);
-    // Si hay un médico de esa especialidad, sugerirlo automáticamente
-    const matchingDoc = doctors.find(
-      (d) => d.especialidad.toLowerCase() === esp.toLowerCase()
-    );
-    if (matchingDoc) {
-      setActiveDoctor(matchingDoc.nombre);
-      localStorage.setItem("tejas_active_doctor", matchingDoc.nombre);
+    if (esp !== "Todas") {
+      const normEsp = normalizeText(esp);
+      const matchingDoc = doctors.find(
+        (d) => normalizeText(d.especialidad).includes(normEsp)
+      );
+      if (matchingDoc) {
+        setActiveDoctor(matchingDoc.nombre);
+        localStorage.setItem("tejas_active_doctor", matchingDoc.nombre);
+      }
     }
   };
 
@@ -408,7 +459,7 @@ export default function HomePage() {
               >
                 {doctors.map((d) => (
                   <option key={d.id} value={d.nombre}>
-                    {d.nombre} ({d.especialidad})
+                    {cleanMojibake(d.nombre)} ({getCanonicalSpecialty(d.especialidad)})
                   </option>
                 ))}
               </select>
@@ -449,14 +500,19 @@ export default function HomePage() {
         {/* 1. Píldoras Táctiles de Especialidades */}
         <div>
           <div className="flex items-center justify-between mb-1.5 px-1">
-            <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-500">
+            <span className="text-[11px] font-extrabold uppercase tracking-wider text-gray-500 flex items-center gap-1">
+              <ListFilter className="w-3.5 h-3.5 text-pueblo-700" />
               1. Filtrar por Especialidad
             </span>
             <button
-              onClick={() => setShowCoordinator(true)}
-              className="text-[11px] font-bold text-teja-600 hover:underline"
+              onClick={() => handleSelectSpecialty("Todas")}
+              className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-full transition ${
+                selectedSpecialty === "Todas"
+                  ? "bg-teja-100 text-teja-800"
+                  : "text-pueblo-700 hover:underline"
+              }`}
             >
-              + Cargar lista / Nuevo paciente
+              Ver lista completa ({patients.length})
             </button>
           </div>
 
@@ -473,11 +529,12 @@ export default function HomePage() {
             </button>
 
             {allSpecialties.map((esp) => {
-              const count = patients.filter(
-                (p) => p.especialidad.toLowerCase() === esp.toLowerCase()
+              const normEsp = normalizeText(esp);
+              const count = patients.filter((p) =>
+                normalizeText(p.especialidad).includes(normEsp)
               ).length;
               const isSelected =
-                selectedSpecialty.toLowerCase() === esp.toLowerCase();
+                normalizeText(selectedSpecialty) === normEsp;
 
               return (
                 <button
@@ -496,7 +553,49 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 2. Buscador Rápido y Pestañas de Estado */}
+        {/* 2. Selector Desplegable Rápido de la Lista Completa de Pacientes */}
+        <div className="bg-amber-50/80 border border-amber-200/90 rounded-2xl p-3 space-y-1.5 shadow-sm">
+          <div className="flex items-center justify-between">
+            <label
+              htmlFor="selector-paciente-completo"
+              className="text-[11px] font-extrabold text-amber-950 flex items-center gap-1.5"
+            >
+              <Users className="w-3.5 h-3.5 text-amber-800" />
+              <span>Lista Completa ({patients.length} pacientes) - Selección Rápida:</span>
+            </label>
+            {selectedSpecialty !== "Todas" && (
+              <button
+                type="button"
+                onClick={() => handleSelectSpecialty("Todas")}
+                className="text-[10px] font-bold text-amber-900 underline hover:text-amber-950"
+              >
+                Quitar filtro de especialidad
+              </button>
+            )}
+          </div>
+          <select
+            id="selector-paciente-completo"
+            value=""
+            onChange={(e) => {
+              const target = patients.find((p) => p.id === e.target.value);
+              if (target) {
+                setSelectedPatient(target);
+              }
+            }}
+            className="w-full bg-white text-gray-900 border border-amber-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-inner"
+          >
+            <option value="">
+              -- Busca y selecciona cualquier paciente por documento o nombre ({patients.length}) --
+            </option>
+            {patients.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.tipoDocumento || "CC"} {p.documento || "S/D"} • {cleanMojibake(p.nombre)} • {p.edad} años • {getCanonicalSpecialty(p.especialidad)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* 3. Buscador Rápido y Pestañas de Estado */}
         <div className="bg-white rounded-2xl p-3 shadow-sm border border-gray-200 space-y-2.5">
           <div className="relative">
             <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -504,10 +603,35 @@ export default function HomePage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar paciente por nombre, cédula o vereda..."
+              placeholder="Buscar por nombre, número de documento o teléfono..."
               className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-9 pr-3 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-pueblo-500"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-bold"
+              >
+                ✕
+              </button>
+            )}
           </div>
+
+          {/* Aviso inteligente de búsqueda global si no coincidió en la especialidad activa */}
+          {isShowingGlobalFallback && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-900 px-3 py-2 rounded-xl text-xs flex items-center justify-between gap-2">
+              <span>
+                No se encontró en <strong>{selectedSpecialty}</strong>, pero se hallaron{" "}
+                <strong>{totalGlobalMatches} paciente(s)</strong> en la lista general:
+              </span>
+              <button
+                onClick={() => setSelectedSpecialty("Todas")}
+                className="bg-blue-600 text-white font-bold text-[10px] px-2.5 py-1 rounded-lg shrink-0"
+              >
+                Ver todos
+              </button>
+            </div>
+          )}
 
           <div className="grid grid-cols-3 gap-1.5 bg-gray-100 p-1 rounded-xl text-xs font-extrabold">
             <button
@@ -548,17 +672,26 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 3. Lista de Tarjetas de Pacientes */}
+        {/* 4. Lista de Tarjetas de Pacientes */}
         <div className="space-y-2.5">
           {filteredPatients.length === 0 ? (
-            <div className="bg-white rounded-2xl p-8 text-center border border-gray-200 space-y-2">
+            <div className="bg-white rounded-2xl p-8 text-center border border-gray-200 space-y-3">
               <p className="text-sm font-bold text-gray-700">
-                No hay pacientes en esta vista
+                No hay pacientes con ese criterio en &ldquo;{selectedSpecialty}&rdquo;
               </p>
               <p className="text-xs text-gray-500">
-                Cambia de pestaña o especialidad, o agrega un nuevo paciente en
-                el botón de Coordinación.
+                Si el paciente fue registrado para otra especialidad, búscalo en la lista completa.
               </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedSpecialty("Todas");
+                  setSearchQuery("");
+                }}
+                className="bg-pueblo-700 text-white font-extrabold text-xs px-4 py-2 rounded-xl shadow-sm hover:bg-pueblo-800 transition"
+              >
+                Mostrar Lista Completa ({patients.length} pacientes)
+              </button>
             </div>
           ) : (
             filteredPatients.map((patient) => {
@@ -578,31 +711,33 @@ export default function HomePage() {
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <div className="space-y-0.5">
+                    {/* Columnas requeridas: Nombre, Tipo de documento, Número de documento, Edad en años, Teléfono y Especialidad */}
+                    <div className="space-y-1">
+                      {/* Especialidad + Tipo y Número de Documento */}
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="bg-pueblo-50 text-pueblo-800 border border-pueblo-200 text-[10px] font-extrabold px-2 py-0.5 rounded-md">
-                          {patient.especialidad}
+                        <span className="bg-pueblo-100 text-pueblo-900 border border-pueblo-200 text-[11px] font-extrabold px-2.5 py-0.5 rounded-lg">
+                          {getCanonicalSpecialty(patient.especialidad)}
                         </span>
-                        <span className="text-[11px] text-gray-500 font-semibold">
-                          {patient.tipoDocumento} {patient.documento}
+                        <span className="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md">
+                          {patient.tipoDocumento || "CC"} {patient.documento || "Sin documento"}
                         </span>
-                        {patient.veredaBarrio && (
-                          <span className="text-[11px] text-gray-500">
-                            • {patient.veredaBarrio}
-                          </span>
-                        )}
                       </div>
 
-                      <h3 className="text-base font-extrabold text-gray-900 pt-0.5">
-                        {patient.nombre}
+                      {/* Nombre completo */}
+                      <h3 className="text-base font-extrabold text-gray-900 pt-0.5 leading-snug">
+                        {cleanMojibake(patient.nombre)}
                       </h3>
 
-                      <p className="text-xs text-gray-600">
-                        <strong>{patient.edad} años</strong> ({patient.sexo})
-                        {patient.motivoInicial
-                          ? ` • ${patient.motivoInicial}`
-                          : ""}
-                      </p>
+                      {/* Edad en años + Teléfono */}
+                      <div className="flex items-center gap-3 text-xs text-gray-600 flex-wrap pt-0.5">
+                        <span className="font-bold text-gray-800">
+                          {patient.edad} años
+                        </span>
+                        <span className="text-gray-300">•</span>
+                        <span className="font-medium text-gray-600 flex items-center gap-1">
+                          📞 {patient.telefono && patient.telefono !== "0" && patient.telefono.trim() !== "" ? patient.telefono : "Sin teléfono"}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Estado del paciente */}
@@ -626,7 +761,7 @@ export default function HomePage() {
                     </div>
                   </div>
 
-                  {/* Etiquetas de lo requerido si ya fueron marcadas */}
+                  {/* Etiquetas de Seguimiento, Exámenes o Remisión si ya fueron marcadas */}
                   {(patient.requiereSeguimiento ||
                     patient.requiereExamenes ||
                     patient.requiereRemision) && (

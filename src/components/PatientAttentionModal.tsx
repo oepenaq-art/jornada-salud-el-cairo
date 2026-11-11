@@ -7,6 +7,7 @@ import {
   StructuredMedicalNote,
 } from "../types/medical";
 import { blobToBase64 } from "../lib/storage";
+import { cleanMojibake, getCanonicalSpecialty } from "../lib/normalize";
 import {
   ArrowLeft,
   Mic,
@@ -117,6 +118,19 @@ export default function PatientAttentionModal({
   const startRecording = async () => {
     setAiError(null);
     setAiSuccessMsg(null);
+
+    if (
+      typeof window === "undefined" ||
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ) {
+      setAiError(
+        "Tu navegador no soporta grabación de audio directa. Puedes escribir o usar el micrófono del teclado de tu celular en la casilla de abajo."
+      );
+      setShowTextDictation(true);
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const preferredTypes = [
@@ -124,15 +138,23 @@ export default function PatientAttentionModal({
         "audio/webm",
         "audio/mp4",
         "audio/aac",
+        "audio/ogg",
+        "",
       ];
       let selectedType = "";
       for (const t of preferredTypes) {
-        if (
-          typeof MediaRecorder !== "undefined" &&
-          MediaRecorder.isTypeSupported(t)
-        ) {
-          selectedType = t;
-          break;
+        if (!t) break;
+        try {
+          if (
+            typeof MediaRecorder !== "undefined" &&
+            typeof MediaRecorder.isTypeSupported === "function" &&
+            MediaRecorder.isTypeSupported(t)
+          ) {
+            selectedType = t;
+            break;
+          }
+        } catch {
+          // ignore
         }
       }
 
@@ -160,7 +182,11 @@ export default function PatientAttentionModal({
       };
 
       mediaRecorderRef.current = recorder;
-      recorder.start(250);
+      try {
+        recorder.start(500);
+      } catch {
+        recorder.start();
+      }
       setIsRecording(true);
       setRecordingSeconds(0);
 
@@ -463,9 +489,9 @@ export default function PatientAttentionModal({
         </button>
         <div className="text-center">
           <span className="text-[11px] uppercase tracking-wider text-pueblo-200 block font-semibold">
-            {patient.especialidad}
+            {getCanonicalSpecialty(patient.especialidad)}
           </span>
-          <span className="text-xs font-bold">{activeDoctor}</span>
+          <span className="text-xs font-bold">{cleanMojibake(activeDoctor)}</span>
         </div>
         <div className="w-16 text-right">
           {!isOnline && (
@@ -482,23 +508,28 @@ export default function PatientAttentionModal({
         <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200">
           <div className="flex items-start justify-between gap-2">
             <div>
+              <div className="flex items-center gap-2 flex-wrap mb-1">
+                <span className="bg-pueblo-100 text-pueblo-900 border border-pueblo-200 text-[11px] font-extrabold px-2.5 py-0.5 rounded-lg">
+                  {getCanonicalSpecialty(patient.especialidad)}
+                </span>
+                <span className="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md">
+                  {patient.tipoDocumento || "CC"} {patient.documento || "Sin número"}
+                </span>
+              </div>
               <h2 className="text-lg font-extrabold text-gray-900 leading-snug">
-                {patient.nombre}
+                {cleanMojibake(patient.nombre)}
               </h2>
-              <p className="text-xs text-gray-600 font-medium mt-0.5">
-                {patient.tipoDocumento} {patient.documento} •{" "}
-                <strong className="text-gray-800">{patient.edad} años</strong> (
-                {patient.sexo}) • {patient.veredaBarrio || "El Cairo"}
+              <p className="text-xs text-gray-600 font-medium mt-1 flex items-center gap-2 flex-wrap">
+                <strong className="text-gray-800">{patient.edad} años</strong>
+                <span className="text-gray-300">•</span>
+                <span>📞 {patient.telefono && patient.telefono !== "0" && patient.telefono.trim() !== "" ? patient.telefono : "Sin teléfono"}</span>
               </p>
             </div>
-            <span className="bg-pueblo-100 text-pueblo-800 text-xs font-bold px-2.5 py-1 rounded-lg shrink-0">
-              {patient.especialidad}
-            </span>
           </div>
           {patient.motivoInicial && (
             <div className="mt-2.5 bg-amber-50/80 border border-amber-200/80 rounded-xl px-3 py-2 text-xs text-amber-900">
               <strong className="font-bold">Motivo registrado: </strong>
-              {patient.motivoInicial}
+              {cleanMojibake(patient.motivoInicial)}
             </div>
           )}
         </div>
