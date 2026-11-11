@@ -123,8 +123,20 @@ export default function HomePage() {
     // Suscribirse a Firebase Firestore
     const unsub = subscribeToCloudPatients((cloudPatients) => {
       if (cloudPatients && cloudPatients.length > 0) {
-        setPatients(cloudPatients);
-        saveAllPatients(cloudPatients, false);
+        // Filtrar cualquier documento antiguo no deseado (ej. Rosa Emilia 23836)
+        const clean = cloudPatients.filter(
+          (p) =>
+            p.id !== "23836" &&
+            !p.nombre.toLowerCase().includes("rosa emilia")
+        );
+        // Garantizar que el paciente de prueba esté siempre presente
+        const hasTest = clean.some((p) => p.id === "pac-prueba");
+        const listToSet = hasTest
+          ? clean
+          : [PACIENTES_INICIALES[0], ...clean];
+
+        setPatients(listToSet);
+        saveAllPatients(listToSet, true);
       }
     });
 
@@ -615,7 +627,10 @@ export default function HomePage() {
             <option value="">
               -- Busca y selecciona cualquier paciente por documento o nombre ({patients.length}) --
             </option>
-            {patients.map((p) => (
+            <option value="pac-prueba" className="font-bold text-emerald-800 bg-emerald-50">
+              🧪 PACIENTE PRUEBA • Práctica ilimitada de audios para médicos y estudiantes
+            </option>
+            {patients.filter((p) => p.id !== "pac-prueba").map((p) => (
               <option key={p.id} value={p.id}>
                 {p.tipoDocumento || "CC"} {p.documento || "S/D"} • {cleanMojibake(p.nombre)} • {p.edad} años • {getCanonicalSpecialty(p.especialidad)}
               </option>
@@ -714,7 +729,46 @@ export default function HomePage() {
         </div>
 
         {/* 4. Lista de Tarjetas de Pacientes */}
-        <div className="space-y-2.5">
+        <div className="space-y-3">
+          {/* Tarjeta de Práctica Rápida para Médicos y Estudiantes */}
+          <div
+            onClick={() => {
+              const testP =
+                patients.find((p) => p.id === "pac-prueba") ||
+                PACIENTES_INICIALES[0];
+              setSelectedPatient(testP);
+            }}
+            className="bg-gradient-to-r from-emerald-600 via-teal-700 to-emerald-800 text-white rounded-2xl p-4 shadow-md border-2 border-emerald-400 cursor-pointer active:scale-[0.99] transition hover:shadow-lg flex items-center justify-between gap-3"
+          >
+            <div className="flex items-center gap-3">
+              <div className="bg-white/20 p-3 rounded-2xl shrink-0 flex items-center justify-center">
+                <Mic className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="bg-white text-emerald-900 text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-sm">
+                    🧪 Modo Práctica Ilimitada
+                  </span>
+                  <span className="text-[11px] font-bold text-emerald-100">
+                    Atenciones Infinitas
+                  </span>
+                </div>
+                <h3 className="font-extrabold text-base leading-snug mt-1">
+                  Paciente Prueba • Toca aquí para practicar tu audio
+                </h3>
+                <p className="text-xs text-emerald-100 leading-snug">
+                  Ensaya tu micrófono, prueba cómo la IA estructura el análisis y genera la orden médica con el logo de la Fundación cuantas veces quieras.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="bg-white text-emerald-800 hover:bg-emerald-50 text-xs font-black px-4 py-2.5 rounded-xl shrink-0 shadow-md transition active:scale-95 flex items-center gap-1.5"
+            >
+              <Mic className="w-4 h-4 text-emerald-700" />
+              <span>Practicar</span>
+            </button>
+          </div>
           {filteredPatients.length === 0 ? (
             <div className="bg-white rounded-2xl p-8 text-center border border-gray-200 space-y-3">
               <p className="text-sm font-bold text-gray-700">

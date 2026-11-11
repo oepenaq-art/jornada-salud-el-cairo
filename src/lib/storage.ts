@@ -33,7 +33,7 @@ function openDB(): Promise<IDBDatabase> {
   });
 }
 
-const CURRENT_DATASET_VERSION = "2026_11_11_v6_paciente_prueba";
+const CURRENT_DATASET_VERSION = "2026_11_11_v7_clean_pac_prueba";
 
 export async function loadPatients(): Promise<Patient[]> {
   try {
