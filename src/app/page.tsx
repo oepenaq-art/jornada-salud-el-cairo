@@ -137,8 +137,30 @@ export default function HomePage() {
 
         setPatients(listToSet);
         saveAllPatients(listToSet, true);
+
+        // Si la URL contiene el parámetro ?orden=pac-XXX, abrir el documento oficial directamente
+        if (typeof window !== "undefined") {
+          const urlParams = new URLSearchParams(window.location.search);
+          const ordenId = urlParams.get("orden");
+          if (ordenId) {
+            const match = listToSet.find((p) => p.id === ordenId);
+            if (match) setPrintPatient(match);
+          }
+        }
       }
     });
+
+    // Revisión inicial de parámetro ?orden= en IndexedDB
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ordenId = urlParams.get("orden");
+      if (ordenId) {
+        loadPatients().then((list) => {
+          const match = list.find((p) => p.id === ordenId);
+          if (match) setPrintPatient(match);
+        });
+      }
+    }
 
     return () => {
       window.removeEventListener("online", handleOnline);
@@ -402,7 +424,13 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 pb-20">
+    <>
+      <div
+        id="app-main-content"
+        className={`min-h-screen flex flex-col bg-gray-100 pb-20 ${
+          printPatient ? "print:hidden" : ""
+        }`}
+      >
       {/* Banner Decorativo Superior inspirado en el Calado de El Cairo */}
       <div
         className="h-2.5 w-full bg-repeat-x bg-center"
@@ -972,6 +1000,7 @@ export default function HomePage() {
           </div>
         </div>
       </main>
+      </div>
 
       {/* Modal de Atención Médica y Dictado por Voz */}
       {selectedPatient && (
@@ -1021,6 +1050,6 @@ export default function HomePage() {
           onClose={() => setEditingPatient(null)}
         />
       )}
-    </div>
+    </>
   );
 }

@@ -58,23 +58,23 @@ body {
 
 /* Reglas de impresión para el documento oficial y órdenes médicas */
 @media print {
-  body {
-    background: white !important;
-    color: #111827 !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
-
-  /* Ocultar interfaz no deseada al imprimir */
+  /* 1. Ocultar absolutamente todo el contenido base de la aplicación */
+  #app-main-content,
+  #app-main-content *,
+  main,
   header,
   footer,
   nav,
   .print\:hidden {
     display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
   }
 
-  /* Asegurar que el modal ocupe toda la hoja sin fondo oscuro ni scroll */
-  .fixed {
+  /* 2. El modal imprimible debe ser el único visible y desplegarse plano */
+  #printable-modal-overlay {
     position: static !important;
     background: transparent !important;
     padding: 0 !important;
@@ -84,18 +84,40 @@ body {
     max-height: none !important;
     overflow: visible !important;
     box-shadow: none !important;
+    display: block !important;
   }
 
-  .shadow-2xl,
-  .shadow-xl,
-  .shadow-lg,
-  .shadow-md {
+  #printable-document-root {
+    position: static !important;
     box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
   }
 
-  .max-w-2xl,
-  .max-w-3xl {
-    max-width: 100% !important;
+  html,
+  body {
+    background: white !important;
+    color: #111827 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  @page {
+    size: portrait;
+    margin: 8mm;
   }
 
   /* Evitar cortes indeseados en títulos y firmas */

@@ -1,9 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Patient } from "../types/medical";
 import { cleanMojibake, getCanonicalSpecialty } from "../lib/normalize";
-import { Printer, Share2, X, CheckSquare, Square, Stethoscope } from "lucide-react";
+import {
+  Printer,
+  Share2,
+  X,
+  CheckSquare,
+  Square,
+  Stethoscope,
+  Download,
+  Loader2,
+  CheckCircle2,
+} from "lucide-react";
 
 interface Props {
   patient: Patient;
@@ -12,12 +22,44 @@ interface Props {
 
 export default function PrintableReferralModal({ patient, onClose }: Props) {
   const note = patient.analisisEstructurado;
+  const [isGeneratingDoc, setIsGeneratingDoc] = useState(false);
+  const [generatedSuccess, setGeneratedSuccess] = useState(false);
 
   const handlePrint = () => {
     window.print();
   };
 
-  const handleShareWhatsApp = () => {
+  // Carga dinámica de html2canvas con fallback a CDN para máxima compatibilidad
+  const getHtml2Canvas = async () => {
+    try {
+      // @ts-ignore
+      const mod = await import("html2canvas");
+      return mod.default || mod;
+    } catch {
+      if (typeof window !== "undefined" && !(window as any).html2canvas) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+      // @ts-ignore
+      return (window as any).html2canvas;
+    }
+  };
+
+  const buildShareUrl = () => {
+    const origin =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "https://jornada-salud-el-cairo-inky.vercel.app";
+    return `${origin}/?orden=${patient.id}`;
+  };
+
+  const getWhatsAppMessageText = (fileDownloaded = false) => {
     const flags = [
       patient.requiereSeguimiento ? "Seguimiento" : "",
       patient.requiereExamenes ? "Exámenes" : "",
@@ -26,16 +68,21 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
       .filter(Boolean)
       .join(" + ");
 
-    const text = `*FUNDACIÓN TEJAS PARA MI PUEBLO*
-*Jornada de Salud - El Cairo, Valle del Cauca*
-----------------------------------
+    const docLink = buildShareUrl();
+
+    return `*FUNDACIÓN TEJAS PARA MI PUEBLO*
+*Jornada de Salud • El Cairo, Valle del Cauca*
+━━━━━━━━━━━━━━━━━━━━━━━━━
+📄 *ORDEN MÉDICA Y RESUMEN CLÍNICO OFICIAL*
 *Paciente:* ${cleanMojibake(patient.nombre)}
 *Identificación:* ${patient.tipoDocumento || "CC"} ${patient.documento || "Sin número"} (${patient.edad} años)
-*Teléfono:* ${patient.telefono || "No registrado"}
 *Especialidad:* ${getCanonicalSpecialty(patient.especialidad)}
 *Procedencia:* ${cleanMojibake(patient.veredaBarrio || "El Cairo")}
 *Conducta Requerida:* ${flags || "Valoración realizada"}
-${patient.detalleDestino ? `*Detalle / Destino:* ${patient.detalleDestino}\n` : ""}----------------------------------
+${patient.detalleDestino ? `*Detalle / Destino:* ${patient.detalleDestino}\n` : ""}
+🔗 *Ver Documento Oficial con Logo y Firma en línea:*
+${docLink}
+━━━━━━━━━━━━━━━━━━━━━━━━━
 *1. ENFERMEDAD ACTUAL:*
 ${note?.enfermedadActual || "N/A"}
 
@@ -50,44 +97,178 @@ ${note?.impresionDiagnostica || "N/A"}
 
 *5. PLAN Y JUSTIFICACIÓN:*
 ${note?.planYJustificacion || "N/A"}
-----------------------------------
+━━━━━━━━━━━━━━━━━━━━━━━━━
 *Profesional Tratante:* ${patient.medicoAtendio || "Profesional de la Jornada"}
-*Fecha de Atención:* ${patient.fechaAtencion || new Date().toLocaleString("es-CO")}`;
+*Fecha de Atención:* ${patient.fechaAtencion || new Date().toLocaleString("es-CO")}
+${fileDownloaded ? "\n📎 *Se ha generado el documento oficial con membrete y sello listo para guardar.*" : ""}`;
+  };
 
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    window.open(url, "_blank");
+  // Generar imagen de alta resolución del documento oficial
+  const generateDocumentBlob = async (): Promise<Blob | null> => {
+    const element = document.getElementById("printable-document-content");
+    if (!element) return null;
+
+    const html2canvas = await getHtml2Canvas();
+    if (!html2canvas) return null;
+
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: "#ffffff",
+      windowWidth: element.scrollWidth,
+    });
+
+    return new Promise((resolve) => {
+      canvas.toBlob((b: Blob | null) => resolve(b), "image/png", 0.95);
+    });
+  };
+
+  // Descarga directa del documento como archivo de imagen
+  const handleDownloadDocument = async () => {
+    setIsGeneratingDoc(true);
+    try {
+      const blob = await generateDocumentBlob();
+      if (!blob) {
+        alert("No fue posible generar el documento. Usa el botón de Imprimir / PDF.");
+        return;
+      }
+      const cleanName = patient.nombre.replace(/[^a-zA-Z0-9]/g, "_");
+      const fileName = `Orden_Medica_${cleanName}_TejasParaMiPueblo.png`;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      setGeneratedSuccess(true);
+      setTimeout(() => setGeneratedSuccess(false), 3000);
+    } catch (err) {
+      console.error("Error descargando documento:", err);
+      window.print();
+    } finally {
+      setIsGeneratingDoc(false);
+    }
+  };
+
+  // Compartir por WhatsApp creando y adjuntando el documento
+  const handleShareWhatsApp = async () => {
+    setIsGeneratingDoc(true);
+    try {
+      const blob = await generateDocumentBlob();
+      const cleanName = patient.nombre.replace(/[^a-zA-Z0-9]/g, "_");
+      const fileName = `Orden_Medica_${cleanName}_TejasParaMiPueblo.png`;
+
+      // 1. Si estamos en celular (Android / iOS) con soporte para compartir archivos directamente
+      if (
+        blob &&
+        typeof navigator !== "undefined" &&
+        navigator.share &&
+        navigator.canShare
+      ) {
+        const file = new File([blob], fileName, { type: "image/png" });
+        if (navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: `Orden Médica Oficial - ${cleanMojibake(patient.nombre)}`,
+              text: getWhatsAppMessageText(true),
+            });
+            setIsGeneratingDoc(false);
+            return;
+          } catch (e) {
+            // Si el usuario canceló el selector nativo, no hacemos nada más
+            setIsGeneratingDoc(false);
+            return;
+          }
+        }
+      }
+
+      // 2. Si no soporta compartir archivo directo (ej. navegador de escritorio):
+      // Descargamos el documento para que el usuario lo tenga listo y abrimos WhatsApp con el enlace oficial
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+      }
+
+      const text = getWhatsAppMessageText(true);
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(waUrl, "_blank");
+    } catch (err) {
+      console.error("Error compartiendo por WhatsApp:", err);
+      const text = getWhatsAppMessageText(false);
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    } finally {
+      setIsGeneratingDoc(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-      <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden my-auto max-h-[94vh] flex flex-col print:max-h-none print:shadow-none print:my-0 print:rounded-none">
-        {/* Barra superior de control (NO se imprime) */}
-        <div className="bg-pueblo-900 text-white px-4 py-3 flex items-center justify-between print:hidden">
-          <div className="flex items-center gap-2">
-            <span className="bg-teja-600 text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full">
+    <div
+      id="printable-modal-overlay"
+      className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-2 sm:p-4 overflow-y-auto print:p-0 print:bg-white print:static print:overflow-visible"
+    >
+      <div
+        id="printable-document-root"
+        className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden my-auto max-h-[94vh] flex flex-col print:max-h-none print:shadow-none print:my-0 print:rounded-none print:w-full print:static"
+      >
+        {/* Barra superior de control (NUNCA se imprime) */}
+        <div className="bg-pueblo-900 text-white px-3 sm:px-4 py-3 flex items-center justify-between print:hidden">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="bg-teja-600 text-white text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full shrink-0">
               Documento Oficial
             </span>
-            <span className="font-bold text-sm truncate">
-              Orden y Resumen Clínico • {cleanMojibake(patient.nombre)}
+            <span className="font-bold text-xs sm:text-sm truncate">
+              {cleanMojibake(patient.nombre)}
             </span>
           </div>
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Botón Descargar Documento (Imagen PNG Oficial) */}
+            <button
+              onClick={handleDownloadDocument}
+              disabled={isGeneratingDoc}
+              className="flex items-center gap-1 bg-white/15 hover:bg-white/25 text-white text-xs font-bold px-2.5 py-1.5 rounded-xl transition active:scale-95"
+              title="Descargar documento con membrete y logo como imagen"
+            >
+              <Download className="w-4 h-4 text-amber-300" />
+              <span className="hidden sm:inline">Descargar</span>
+            </button>
+
+            {/* Botón WhatsApp (Genera el documento oficial y lo adjunta) */}
             <button
               onClick={handleShareWhatsApp}
-              className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-sm"
-              title="Compartir por WhatsApp al paciente o acudiente"
+              disabled={isGeneratingDoc}
+              className="flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-sm active:scale-95 disabled:opacity-75"
+              title="Crear documento y enviar por WhatsApp"
             >
-              <Share2 className="w-4 h-4" />
-              <span className="hidden sm:inline">WhatsApp</span>
+              {isGeneratingDoc ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Creando...</span>
+                </>
+              ) : (
+                <>
+                  <Share2 className="w-4 h-4" />
+                  <span>WhatsApp</span>
+                </>
+              )}
             </button>
+
+            {/* Botón Imprimir / PDF */}
             <button
               onClick={handlePrint}
-              className="flex items-center gap-1.5 bg-teja-600 hover:bg-teja-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow-sm"
-              title="Imprimir documento o Guardar como PDF"
+              className="flex items-center gap-1 bg-teja-600 hover:bg-teja-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-sm active:scale-95"
+              title="Imprimir documento oficial en 1 página o Guardar como PDF"
             >
               <Printer className="w-4 h-4" />
-              <span>Imprimir / PDF</span>
+              <span className="hidden sm:inline">Imprimir / PDF</span>
             </button>
+
             <button
               onClick={onClose}
               className="p-1.5 hover:bg-white/20 rounded-xl transition"
@@ -98,11 +279,24 @@ ${note?.planYJustificacion || "N/A"}
           </div>
         </div>
 
+        {/* Mensaje de confirmación de descarga */}
+        {generatedSuccess && (
+          <div className="bg-emerald-100 border-b border-emerald-300 text-emerald-900 px-4 py-1.5 text-xs font-bold flex items-center justify-between print:hidden">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+              Documento oficial generado y guardado en tu dispositivo.
+            </span>
+          </div>
+        )}
+
         {/* DOCUMENTO IMPRIMIBLE CON ESTILO Y COLORES INSTITUCIONALES */}
-        <div className="p-5 sm:p-8 overflow-y-auto space-y-4 text-gray-800 print:p-0 print:overflow-visible">
+        <div
+          id="printable-document-content"
+          className="p-5 sm:p-8 overflow-y-auto space-y-4 text-gray-800 bg-white print:p-0 print:overflow-visible"
+        >
           {/* Cinta decorativa cultural inspirada en El Cairo */}
           <div
-            className="h-2 w-full rounded-full"
+            className="h-2.5 w-full rounded-full"
             style={{
               backgroundImage:
                 "linear-gradient(90deg, #d25427 0%, #FACC15 25%, #38BDF8 50%, #356530 75%, #d25427 100%)",
