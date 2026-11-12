@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import { Patient } from "../types/medical";
 import { cleanMojibake, getCanonicalSpecialty } from "../lib/normalize";
 import {
-  Printer,
-  Share2,
   X,
   CheckSquare,
   Square,
@@ -24,10 +22,6 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
   const note = patient.analisisEstructurado;
   const [isGeneratingDoc, setIsGeneratingDoc] = useState(false);
   const [generatedSuccess, setGeneratedSuccess] = useState(false);
-
-  const handlePrint = () => {
-    window.print();
-  };
 
   // Carga dinámica de html2canvas con fallback a CDN
   const getHtml2Canvas = async () => {
@@ -71,58 +65,6 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
       // @ts-ignore
       return (window as any).jspdf?.jsPDF || (window as any).jsPDF;
     }
-  };
-
-  const buildShareUrl = () => {
-    const origin =
-      typeof window !== "undefined"
-        ? window.location.origin
-        : "https://jornada-salud-el-cairo-inky.vercel.app";
-    return `${origin}/?orden=${patient.id}`;
-  };
-
-  const getWhatsAppMessageText = (fileDownloaded = false) => {
-    const flags = [
-      patient.requiereSeguimiento ? "Seguimiento" : "",
-      patient.requiereExamenes ? "Exámenes" : "",
-      patient.requiereRemision ? "Remisión" : "",
-    ]
-      .filter(Boolean)
-      .join(" + ");
-
-    const docLink = buildShareUrl();
-
-    return `*FUNDACIÓN TEJAS PARA MI PUEBLO*
-*Jornada de Salud • El Cairo, Valle del Cauca*
-━━━━━━━━━━━━━━━━━━━━━━━━━
-📄 *ORDEN MÉDICA Y RESUMEN CLÍNICO (PDF OFICIAL)*
-*Paciente:* ${cleanMojibake(patient.nombre)}
-*Identificación:* ${patient.tipoDocumento || "CC"} ${patient.documento || "Sin número"} (${patient.edad} años)
-*Especialidad:* ${getCanonicalSpecialty(patient.especialidad)}
-*Procedencia:* ${cleanMojibake(patient.veredaBarrio || "El Cairo")}
-*Conducta Requerida:* ${flags || "Valoración realizada"}
-${patient.detalleDestino ? `*Detalle / Destino:* ${patient.detalleDestino}\n` : ""}
-🔗 *Ver y Descargar Documento Oficial en PDF con Logo y Firma:*
-${docLink}
-━━━━━━━━━━━━━━━━━━━━━━━━━
-*1. ENFERMEDAD ACTUAL:*
-${note?.enfermedadActual || "Sin información relevante"}
-
-*2. ANTECEDENTES:*
-${note?.antecedentes?.trim() || "Sin información relevante"}
-
-*3. EXAMEN FÍSICO:*
-${note?.examenFisico?.trim() || "Sin información relevante"}
-
-*4. IMPRESIÓN DIAGNÓSTICA:*
-${note?.impresionDiagnostica || "Sin información relevante"}
-
-*5. PLAN Y JUSTIFICACIÓN:*
-${note?.planYJustificacion || "Sin información relevante"}
-━━━━━━━━━━━━━━━━━━━━━━━━━
-*Profesional Tratante:* ${patient.medicoAtendio || "Profesional de la Jornada"}
-*Fecha de Atención:* ${patient.fechaAtencion || new Date().toLocaleString("es-CO")}
-${fileDownloaded ? "\n📎 *Se ha generado el documento oficial en formato PDF listo para descargar o consultar.*" : ""}`;
   };
 
   // Generador de archivo PDF real (application/pdf)
@@ -206,60 +148,6 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial en formato PDF l
     }
   };
 
-  // Compartir por WhatsApp creando y adjuntando el documento PDF
-  const handleShareWhatsApp = async () => {
-    setIsGeneratingDoc(true);
-    try {
-      const res = await generatePdfBlob();
-
-      // 1. Si estamos en celular (Android / iOS) con soporte para compartir archivos PDF directamente
-      if (
-        res &&
-        typeof navigator !== "undefined" &&
-        navigator.share &&
-        navigator.canShare
-      ) {
-        const file = new File([res.blob], res.fileName, { type: "application/pdf" });
-        if (navigator.canShare({ files: [file] })) {
-          try {
-            await navigator.share({
-              files: [file],
-              title: `Orden Médica Oficial (PDF) - ${cleanMojibake(patient.nombre)}`,
-              text: getWhatsAppMessageText(true),
-            });
-            setIsGeneratingDoc(false);
-            return;
-          } catch {
-            // Si el usuario canceló el selector nativo
-            setIsGeneratingDoc(false);
-            return;
-          }
-        }
-      }
-
-      // 2. Si no soporta compartir archivo directo (ej. navegador de escritorio):
-      // Descargamos el archivo .pdf y abrimos WhatsApp con el mensaje estructurado y link directo
-      if (res) {
-        const url = URL.createObjectURL(res.blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = res.fileName;
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 2000);
-      }
-
-      const text = getWhatsAppMessageText(true);
-      const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-      window.open(waUrl, "_blank");
-    } catch (err) {
-      console.error("Error compartiendo por WhatsApp:", err);
-      const text = getWhatsAppMessageText(false);
-      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-    } finally {
-      setIsGeneratingDoc(false);
-    }
-  };
-
   return (
     <div
       id="printable-modal-overlay"
@@ -280,51 +168,30 @@ ${fileDownloaded ? "\n📎 *Se ha generado el documento oficial en formato PDF l
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             {/* Botón Descargar PDF Oficial (.pdf) */}
             <button
               onClick={handleDownloadPdf}
               disabled={isGeneratingDoc}
-              className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-black px-3 py-1.5 rounded-xl transition shadow-sm active:scale-95 disabled:opacity-75"
+              className="flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-black px-3.5 py-1.5 rounded-xl transition shadow-sm active:scale-95 disabled:opacity-75 cursor-pointer"
               title="Descargar documento oficial en formato PDF (.pdf)"
-            >
-              <FileDown className="w-4 h-4 text-white" />
-              <span>Descargar PDF</span>
-            </button>
-
-            {/* Botón WhatsApp (Genera el PDF y lo envía) */}
-            <button
-              onClick={handleShareWhatsApp}
-              disabled={isGeneratingDoc}
-              className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition shadow-sm active:scale-95 disabled:opacity-75"
-              title="Crear documento PDF y enviar por WhatsApp"
             >
               {isGeneratingDoc ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Creando PDF...</span>
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Generando PDF...</span>
                 </>
               ) : (
                 <>
-                  <Share2 className="w-4 h-4" />
-                  <span>WhatsApp</span>
+                  <FileDown className="w-4 h-4 text-white" />
+                  <span>Descargar PDF</span>
                 </>
               )}
             </button>
 
-            {/* Botón Imprimir */}
-            <button
-              onClick={handlePrint}
-              className="flex items-center gap-1 bg-teja-600 hover:bg-teja-700 text-white text-xs font-bold px-2.5 py-1.5 rounded-xl transition shadow-sm active:scale-95"
-              title="Imprimir documento oficial en 1 página"
-            >
-              <Printer className="w-4 h-4" />
-              <span className="hidden sm:inline">Imprimir</span>
-            </button>
-
             <button
               onClick={onClose}
-              className="p-1.5 hover:bg-white/20 rounded-xl transition"
+              className="p-1.5 hover:bg-white/20 rounded-xl transition text-white"
               title="Cerrar vista"
             >
               <X className="w-5 h-5" />
