@@ -458,8 +458,8 @@ export default function HomePage() {
 
         <div className="relative z-10 max-w-3xl mx-auto px-4 pt-3.5 pb-4 space-y-3">
           {/* Fila superior: Logo Fundación + Botones de Estado y Coordinación */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               <div className="bg-white rounded-2xl p-1.5 shadow-md shrink-0">
                 <img
                   src="/images/logo-tejas.png"
@@ -467,10 +467,10 @@ export default function HomePage() {
                   className="h-12 sm:h-14 w-auto object-contain"
                 />
               </div>
-              <div>
-                <div className="inline-flex items-center gap-1 bg-teja-600/90 text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-sm">
-                  <MapPin className="w-3 h-3" />
-                  El Cairo, Valle del Cauca
+              <div className="min-w-0 flex-1">
+                <div className="inline-flex items-center gap-1 bg-teja-600/90 text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+                  <MapPin className="w-3 h-3 shrink-0" />
+                  <span>El Cairo, Valle del Cauca</span>
                 </div>
                 <h1 className="text-base sm:text-xl font-extrabold tracking-tight leading-tight mt-1">
                   Jornada Médica • Tejas para mi Pueblo
@@ -481,10 +481,10 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="flex flex-col items-end gap-1.5 shrink-0">
-              <div className="flex items-center gap-1.5 flex-wrap justify-end">
+            <div className="flex flex-wrap sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-1.5 shrink-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <span
-                  className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                  className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full whitespace-nowrap ${
                     isOnline
                       ? "bg-green-500/20 text-green-200 border border-green-400/40"
                       : "bg-amber-500 text-white"
@@ -503,7 +503,7 @@ export default function HomePage() {
 
                 <button
                   onClick={() => setShowNewPatientModal(true)}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-xl border border-emerald-400/50 shadow-sm transition flex items-center gap-1.5 text-xs font-black active:scale-95"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-xl border border-emerald-400/50 shadow-sm transition flex items-center gap-1 text-xs font-black active:scale-95 whitespace-nowrap"
                   title="Agregar un paciente nuevo a la jornada"
                 >
                   <UserPlus className="w-3.5 h-3.5" />
@@ -512,7 +512,7 @@ export default function HomePage() {
 
                 <button
                   onClick={() => setShowCoordinator(true)}
-                  className="bg-white/15 hover:bg-white/25 text-white p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl border border-white/20 transition flex items-center gap-1 text-xs font-bold"
+                  className="bg-white/15 hover:bg-white/25 text-white p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl border border-white/20 transition flex items-center gap-1 text-xs font-bold whitespace-nowrap"
                   title="Panel de Coordinación, Carga de Excel y Configuración"
                 >
                   <Settings className="w-3.5 h-3.5" />
@@ -522,7 +522,7 @@ export default function HomePage() {
 
               <button
                 onClick={() => exportJornadaToExcel(patients)}
-                className="text-[11px] font-bold text-amber-200 hover:text-white flex items-center gap-1 underline"
+                className="text-[11px] font-bold text-amber-200 hover:text-white flex items-center gap-1 underline whitespace-nowrap"
               >
                 <Download className="w-3 h-3" />
                 Exportar Excel ({patients.length})
@@ -531,24 +531,22 @@ export default function HomePage() {
           </div>
 
           {/* Selector del Médico Activo en el celular */}
-          <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-2.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-xs">
-              <Stethoscope className="w-4 h-4 text-teja-400 shrink-0" />
-              <span className="text-pueblo-100 font-semibold shrink-0">
-                Médico en turno:
-              </span>
-              <select
-                value={activeDoctor}
-                onChange={(e) => handleSelectDoctor(e.target.value)}
-                className="bg-white text-gray-900 font-bold text-xs rounded-xl px-2.5 py-1.5 flex-1 focus:outline-none"
-              >
-                {doctors.map((d) => (
-                  <option key={d.id} value={d.nombre}>
-                    {cleanMojibake(d.nombre)} ({cleanMojibake(d.especialidad)})
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-2.5 flex items-center gap-2 text-xs min-w-0">
+            <Stethoscope className="w-4 h-4 text-teja-400 shrink-0" />
+            <span className="text-pueblo-100 font-semibold shrink-0 whitespace-nowrap">
+              Médico en turno:
+            </span>
+            <select
+              value={activeDoctor}
+              onChange={(e) => handleSelectDoctor(e.target.value)}
+              className="bg-white text-gray-900 font-bold text-xs rounded-xl px-2.5 py-1.5 flex-1 min-w-0 w-full truncate focus:outline-none"
+            >
+              {doctors.map((d) => (
+                <option key={d.id} value={d.nombre}>
+                  {cleanMojibake(d.nombre)} ({cleanMojibake(d.especialidad)})
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </header>

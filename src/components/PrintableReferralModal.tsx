@@ -67,7 +67,7 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
     }
   };
 
-  // Generador de archivo PDF real (application/pdf)
+  // Generador de archivo PDF real (application/pdf) con clonación off-screen A4 para evitar cortes en móvil y escritorio
   const generatePdfBlob = async (): Promise<{ blob: Blob; fileName: string } | null> => {
     const element = document.getElementById("printable-document-content");
     if (!element) return null;
@@ -76,16 +76,69 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
     const JsPDFClass = await getJsPdf();
     if (!html2canvas || !JsPDFClass) return null;
 
-    // Capturar en canvas con escala 2x para nitidez de impresión
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      backgroundColor: "#ffffff",
-      windowWidth: element.scrollWidth,
-    });
+    // Clonar en un contenedor oculto con ancho fijo A4 (794px) y sin scroll/max-height
+    const wrapper = document.createElement("div");
+    wrapper.style.position = "fixed";
+    wrapper.style.left = "-99999px";
+    wrapper.style.top = "0";
+    wrapper.style.width = "794px";
+    wrapper.style.background = "#ffffff";
+    wrapper.style.zIndex = "-1";
 
-    const imgData = canvas.toDataURL("image/jpeg", 0.95);
+    const clone = element.cloneNode(true) as HTMLElement;
+    clone.style.width = "794px";
+    clone.style.padding = "28px 32px";
+    clone.style.overflow = "visible";
+    clone.style.maxHeight = "none";
+    clone.style.height = "auto";
+    clone.style.backgroundColor = "#ffffff";
+
+    // Forzar diseño horizontal de escritorio en el clon PDF (independiente del ancho del celular)
+    const headerRow = clone.querySelector("#pdf-header-row") as HTMLElement | null;
+    if (headerRow) {
+      headerRow.style.display = "flex";
+      headerRow.style.flexDirection = "row";
+      headerRow.style.alignItems = "center";
+      headerRow.style.justifyContent = "space-between";
+    }
+    const patientGrid = clone.querySelector("#pdf-patient-grid") as HTMLElement | null;
+    if (patientGrid) {
+      patientGrid.style.display = "grid";
+      patientGrid.style.gridTemplateColumns = "repeat(3, minmax(0, 1fr))";
+    }
+    const signatureRow = clone.querySelector("#pdf-signature-row") as HTMLElement | null;
+    if (signatureRow) {
+      signatureRow.style.display = "flex";
+      signatureRow.style.flexDirection = "row";
+      signatureRow.style.alignItems = "flex-end";
+      signatureRow.style.justifyContent = "space-between";
+    }
+
+    wrapper.appendChild(clone);
+    document.body.appendChild(wrapper);
+
+    let canvas: HTMLCanvasElement;
+    try {
+      // Esperar un breve tick para que el DOM clonado e imágenes se estabilicen
+      await new Promise((r) => setTimeout(r, 80));
+
+      canvas = await html2canvas(clone, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        width: 794,
+        height: clone.scrollHeight,
+        windowWidth: 1024,
+        scrollX: 0,
+        scrollY: 0,
+      });
+    } finally {
+      if (wrapper.parentNode) {
+        wrapper.parentNode.removeChild(wrapper);
+      }
+    }
+
     const pdf = new JsPDFClass({
       orientation: "portrait",
       unit: "mm",
@@ -94,25 +147,44 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
 
     const pageWidth = pdf.internal.pageSize.getWidth(); // 210 mm
     const pageHeight = pdf.internal.pageSize.getHeight(); // 297 mm
-    const margin = 8; // 8 mm margen
-    const contentWidth = pageWidth - margin * 2;
-    const contentHeight = (canvas.height * contentWidth) / canvas.width;
+    const margin = 6; // 6 mm margen
+    const usableWidth = pageWidth - margin * 2; // 198 mm
+    const usableHeight = pageHeight - margin * 2; // 285 mm
+    const contentHeight = (canvas.height * usableWidth) / canvas.width;
 
-    if (contentHeight <= pageHeight - margin * 2) {
-      pdf.addImage(imgData, "JPEG", margin, margin, contentWidth, contentHeight);
+    if (contentHeight <= usableHeight) {
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      pdf.addImage(imgData, "JPEG", margin, margin, usableWidth, contentHeight);
+    } else if (contentHeight <= usableHeight * 1.15) {
+      // Si excede ligeramente (hasta 15%), ajustar escala para que quepa completo con firma en 1 hoja A4
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const scaledWidth = usableWidth * (usableHeight / contentHeight);
+      const xOffset = (pageWidth - scaledWidth) / 2;
+      pdf.addImage(imgData, "JPEG", xOffset, margin, scaledWidth, usableHeight);
     } else {
-      // Si la nota clínica es muy extensa, paginar adecuadamente
-      let heightLeft = contentHeight;
-      let position = margin;
+      // Paginación limpia recortando el canvas por página sin cortar ni repetir texto
+      const pxPerMm = canvas.width / usableWidth;
+      const pageSliceHeightPx = Math.floor(usableHeight * pxPerMm);
+      let yPx = 0;
+      let pageIndex = 0;
 
-      pdf.addImage(imgData, "JPEG", margin, position, contentWidth, contentHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft > 0) {
-        position = heightLeft - contentHeight + margin;
-        pdf.addPage();
-        pdf.addImage(imgData, "JPEG", margin, position, contentWidth, contentHeight);
-        heightLeft -= pageHeight;
+      while (yPx < canvas.height) {
+        const sliceH = Math.min(pageSliceHeightPx, canvas.height - yPx);
+        const pageCanvas = document.createElement("canvas");
+        pageCanvas.width = canvas.width;
+        pageCanvas.height = sliceH;
+        const ctx = pageCanvas.getContext("2d");
+        if (ctx) {
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+          ctx.drawImage(canvas, 0, yPx, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+          const sliceImg = pageCanvas.toDataURL("image/jpeg", 0.95);
+          const sliceHeightMm = sliceH / pxPerMm;
+          if (pageIndex > 0) pdf.addPage();
+          pdf.addImage(sliceImg, "JPEG", margin, margin, usableWidth, sliceHeightMm);
+        }
+        yPx += sliceH;
+        pageIndex++;
       }
     }
 
@@ -224,23 +296,26 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
           />
 
           {/* Encabezado con Logo Oficial de la Fundación y Títulos */}
-          <div className="flex items-center justify-between border-b-2 border-teja-600 pb-3 gap-3">
-            <div className="flex items-center gap-3.5">
+          <div
+            id="pdf-header-row"
+            className="flex flex-col sm:flex-row sm:items-center justify-between border-b-2 border-teja-600 pb-3 gap-3"
+          >
+            <div className="flex items-center gap-3 min-w-0">
               <div className="bg-white border border-gray-200 rounded-xl p-1 shadow-sm shrink-0">
                 <img
                   src="/images/logo-tejas.png"
                   alt="Fundación Tejas para mi Pueblo"
-                  className="h-16 sm:h-20 w-auto object-contain"
+                  className="h-14 sm:h-20 w-auto object-contain"
                 />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="inline-block bg-pueblo-100 text-pueblo-900 border border-pueblo-200 text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md mb-0.5">
                   Jornada de Salud Rural • El Cairo, Valle
                 </span>
-                <h1 className="text-base sm:text-lg font-black text-pueblo-900 uppercase tracking-tight leading-tight">
+                <h1 className="text-sm sm:text-lg font-black text-pueblo-900 uppercase tracking-tight leading-tight">
                   Fundación Tejas para mi Pueblo
                 </h1>
-                <p className="text-xs font-extrabold text-teja-700 uppercase">
+                <p className="text-[11px] sm:text-xs font-extrabold text-teja-700 uppercase">
                   Resumen de Historia Clínica y Orden Médica
                 </p>
                 <p className="text-[10px] text-gray-500">
@@ -249,7 +324,7 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
               </div>
             </div>
 
-            <div className="text-right text-[11px] text-gray-600 shrink-0 bg-gray-50 border border-gray-200 p-2 rounded-xl">
+            <div className="text-left sm:text-right text-[11px] text-gray-600 shrink-0 bg-gray-50 border border-gray-200 p-2 rounded-xl">
               <p className="font-extrabold text-gray-800">Fecha de Atención:</p>
               <p className="font-semibold text-pueblo-800">
                 {patient.fechaAtencion || new Date().toLocaleString("es-CO")}
@@ -261,7 +336,10 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
           </div>
 
           {/* Ficha de Identificación del Paciente */}
-          <div className="bg-gradient-to-r from-pueblo-50/60 via-white to-teja-50/60 border border-pueblo-200 rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+          <div
+            id="pdf-patient-grid"
+            className="bg-gradient-to-r from-pueblo-50/60 via-white to-teja-50/60 border border-pueblo-200 rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs"
+          >
             <div>
               <span className="text-gray-500 text-[10px] uppercase font-bold block">
                 Paciente:
@@ -409,7 +487,10 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
           </div>
 
           {/* Bloque de Firma y Validación Profesional */}
-          <div className="pt-6 mt-4 border-t border-gray-200 flex justify-between items-end text-xs">
+          <div
+            id="pdf-signature-row"
+            className="pt-6 mt-4 border-t border-gray-200 flex flex-col sm:flex-row justify-between sm:items-end gap-4 text-xs"
+          >
             <div>
               <div className="w-60 border-b border-gray-500 mb-1"></div>
               <p className="font-extrabold text-gray-900 text-sm">
@@ -425,7 +506,7 @@ export default function PrintableReferralModal({ patient, onClose }: Props) {
               )}
             </div>
 
-            <div className="text-right text-[10px] text-gray-500 max-w-[200px] leading-tight">
+            <div className="text-left sm:text-right text-[10px] text-gray-500 max-w-[200px] leading-tight">
               <p className="font-bold text-pueblo-900">Fundación Tejas para mi Pueblo</p>
               <p>Por la salud, bienestar y dignidad del campesinado colombiano</p>
               <p className="text-teja-700 font-semibold mt-0.5">El Cairo • Valle del Cauca</p>
