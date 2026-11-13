@@ -32,6 +32,7 @@ import PatientAttentionModal from "../components/PatientAttentionModal";
 import PrintableReferralModal from "../components/PrintableReferralModal";
 import CoordinatorModal from "../components/CoordinatorModal";
 import EditPatientModal from "../components/EditPatientModal";
+import NewPatientModal from "../components/NewPatientModal";
 import {
   Search,
   Mic,
@@ -43,6 +44,7 @@ import {
   Download,
   FileText,
   UserCheck,
+  UserPlus,
   MapPin,
   RefreshCw,
   Stethoscope,
@@ -70,6 +72,7 @@ export default function HomePage() {
   // Modals
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
+  const [showNewPatientModal, setShowNewPatientModal] = useState<boolean>(false);
   const [printPatient, setPrintPatient] = useState<Patient | null>(null);
   const [showCoordinator, setShowCoordinator] = useState<boolean>(false);
 
@@ -418,6 +421,11 @@ export default function HomePage() {
     await syncPatientToCloud(newP);
   };
 
+  const handleAddAndAttendPatient = async (newP: Patient) => {
+    await handleAddSinglePatient(newP);
+    setSelectedPatient(newP);
+  };
+
   const handleSaveApiKey = (key: string) => {
     setCustomApiKey(key);
     localStorage.setItem("tejas_gemini_api_key", key);
@@ -474,7 +482,7 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-col items-end gap-1.5 shrink-0">
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-wrap justify-end">
                 <span
                   className={`inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full ${
                     isOnline
@@ -494,11 +502,20 @@ export default function HomePage() {
                 </span>
 
                 <button
+                  onClick={() => setShowNewPatientModal(true)}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-xl border border-emerald-400/50 shadow-sm transition flex items-center gap-1.5 text-xs font-black active:scale-95"
+                  title="Agregar un paciente nuevo a la jornada"
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>+ Agregar Paciente</span>
+                </button>
+
+                <button
                   onClick={() => setShowCoordinator(true)}
-                  className="bg-white/15 hover:bg-white/25 text-white p-2 rounded-xl border border-white/20 transition flex items-center gap-1 text-xs font-bold"
+                  className="bg-white/15 hover:bg-white/25 text-white p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl border border-white/20 transition flex items-center gap-1 text-xs font-bold"
                   title="Panel de Coordinación, Carga de Excel y Configuración"
                 >
-                  <Settings className="w-4 h-4" />
+                  <Settings className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Coordinación</span>
                 </button>
               </div>
@@ -645,6 +662,10 @@ export default function HomePage() {
             id="selector-paciente-completo"
             value=""
             onChange={(e) => {
+              if (e.target.value === "__NEW_PATIENT__") {
+                setShowNewPatientModal(true);
+                return;
+              }
               const target = patients.find((p) => p.id === e.target.value);
               if (target) {
                 setSelectedPatient(target);
@@ -654,6 +675,9 @@ export default function HomePage() {
           >
             <option value="">
               -- Busca y selecciona cualquier paciente por documento o nombre ({patients.length}) --
+            </option>
+            <option value="__NEW_PATIENT__" className="font-extrabold text-emerald-800 bg-emerald-50">
+              ➕ REGISTRAR PACIENTE NUEVO • Si no estaba en la lista de la jornada
             </option>
             <option value="pac-prueba" className="font-bold text-emerald-800 bg-emerald-50">
               🧪 PACIENTE PRUEBA • Práctica ilimitada de audios para médicos y estudiantes
@@ -666,26 +690,40 @@ export default function HomePage() {
           </select>
         </div>
 
-        {/* 3. Buscador Rápido y Pestañas de Estado */}
+        {/* 3. Buscador Rápido, Botón Agregar Paciente y Pestañas de Estado */}
         <div className="bg-white rounded-2xl p-3 shadow-sm border border-gray-200 space-y-2.5">
-          <div className="relative">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Buscar por nombre, número de documento o teléfono..."
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-9 pr-3 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-pueblo-500"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-bold"
-              >
-                ✕
-              </button>
-            )}
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Buscar por nombre, número de documento o teléfono..."
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-9 pr-8 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-pueblo-500"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs font-bold"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Botón "+ Agregar Paciente" junto al buscador */}
+            <button
+              type="button"
+              onClick={() => setShowNewPatientModal(true)}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 sm:px-4 py-2.5 rounded-xl text-xs font-black shrink-0 flex items-center gap-1.5 shadow-sm active:scale-95 transition"
+              title="Registrar un paciente nuevo en la jornada"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span className="hidden sm:inline">+ Agregar Paciente</span>
+              <span className="sm:hidden">+ Paciente</span>
+            </button>
           </div>
 
           {/* Aviso inteligente de búsqueda global si no coincidió en la especialidad activa */}
@@ -798,23 +836,42 @@ export default function HomePage() {
             </button>
           </div>
           {filteredPatients.length === 0 ? (
-            <div className="bg-white rounded-2xl p-8 text-center border border-gray-200 space-y-3">
-              <p className="text-sm font-bold text-gray-700">
-                No hay pacientes con ese criterio en &ldquo;{selectedSpecialty}&rdquo;
-              </p>
-              <p className="text-xs text-gray-500">
-                Si el paciente fue registrado para otra especialidad, búscalo en la lista completa.
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedSpecialty("Todas");
-                  setSearchQuery("");
-                }}
-                className="bg-pueblo-700 text-white font-extrabold text-xs px-4 py-2 rounded-xl shadow-sm hover:bg-pueblo-800 transition"
-              >
-                Mostrar Lista Completa ({patients.length} pacientes)
-              </button>
+            <div className="bg-white rounded-2xl p-6 sm:p-8 text-center border border-gray-200 space-y-3.5 shadow-sm">
+              <div className="w-12 h-12 bg-emerald-100 text-emerald-800 rounded-full flex items-center justify-center mx-auto">
+                <UserPlus className="w-6 h-6 text-emerald-700" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-bold text-gray-800">
+                  {searchQuery
+                    ? `No se encontró ningún paciente con "${searchQuery}"`
+                    : `No hay pacientes con ese criterio en "${selectedSpecialty}"`}
+                </p>
+                <p className="text-xs text-gray-500 max-w-md mx-auto">
+                  ¿Es un paciente nuevo que llegó hoy a la jornada y no estaba en la lista previa?
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowNewPatientModal(true)}
+                  className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-2 active:scale-95"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>+ Registrar Paciente a la Jornada</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedSpecialty("Todas");
+                    setSearchQuery("");
+                  }}
+                  className="w-full sm:w-auto bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs px-4 py-2.5 rounded-xl transition"
+                >
+                  Ver Lista Completa ({patients.length})
+                </button>
+              </div>
             </div>
           ) : (
             filteredPatients.map((patient) => {
@@ -1048,6 +1105,18 @@ export default function HomePage() {
           patient={editingPatient}
           onSave={handleSavePatient}
           onClose={() => setEditingPatient(null)}
+        />
+      )}
+
+      {/* Modal para Agregar Nuevo Paciente */}
+      {showNewPatientModal && (
+        <NewPatientModal
+          specialties={allSpecialties}
+          defaultSpecialty={selectedSpecialty}
+          initialQuery={searchQuery}
+          onAdd={handleAddSinglePatient}
+          onAddAndAttend={handleAddAndAttendPatient}
+          onClose={() => setShowNewPatientModal(false)}
         />
       )}
     </>
